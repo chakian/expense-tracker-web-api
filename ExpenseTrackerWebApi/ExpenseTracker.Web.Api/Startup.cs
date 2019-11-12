@@ -1,15 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNet.OData.Builder;
+using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace ExpenseTracker.Web.Api
 {
@@ -26,6 +22,19 @@ namespace ExpenseTracker.Web.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            //services.AddMvcCore(options =>
+            //{
+            //    options.EnableEndpointRouting = false;
+            //});
+
+            services.AddApiVersioning(options =>
+            {
+                options.ReportApiVersions = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+            });
+            //services.AddOData().EnableApiVersioning();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +44,10 @@ namespace ExpenseTracker.Web.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            //else
+            //{
+            //    app.UseHsts();
+            //}
 
             app.UseHttpsRedirection();
 
@@ -46,6 +59,12 @@ namespace ExpenseTracker.Web.Api
             {
                 endpoints.MapControllers();
             });
+
+            //app.UseMvc(builder =>
+            //{
+            //    builder.Select().Expand().Filter().OrderBy().Count();
+            //    builder.MapVersionedODataRoutes("odata", "odata", modelBuilder.GetEdmModels());
+            //});
         }
     }
 }
