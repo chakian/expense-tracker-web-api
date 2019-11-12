@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace ExpenseTracker.Web.Api.Controllers
 {
@@ -11,8 +10,6 @@ namespace ExpenseTracker.Web.Api.Controllers
     [Route("api/healthcheck")]
     public class HealthCheckController : Controller
     {
-        private readonly ILogger<WeatherForecastController> _logger;
-
         [HttpGet]
         public HealthCheck Get()
         {
