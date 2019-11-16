@@ -11,6 +11,11 @@ namespace ExpenseTracker.Persistence.Context.FluentConfiguration
                 .Property(p => p.Name)
                 .HasMaxLength(250);
 
+            modelBuilder.Entity<TransactionTemplate>()
+                .HasIndex(p => new { p.BudgetId, p.UserId, p.Name })
+                .HasName("IX_TemplateName_User_Budget")
+                .IsUnique();
+
             modelBuilder.Entity<TransactionTemplate>().Property(p => p.Amount)
                 .HasColumnType("Money");
 

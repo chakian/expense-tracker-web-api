@@ -1,6 +1,4 @@
 ﻿using ExpenseTracker.Persistence.Identity;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpenseTracker.Persistence.Context.DbModels
 {
@@ -8,7 +6,6 @@ namespace ExpenseTracker.Persistence.Context.DbModels
     {
         public int Id { get; set; }
 
-        //[Index("IX_TemplateName_User_Budget", 0, IsUnique = true)]
         public string Name { get; set; }
         public decimal? Amount { get; set; }
         public string Description { get; set; }
@@ -22,11 +19,9 @@ namespace ExpenseTracker.Persistence.Context.DbModels
         public int? TargetAccountId { get; set; }
         public virtual Account TargetAccount { get; set; }
 
-        //[Index("IX_TemplateName_User_Budget", 1, IsUnique = true)]
         public int BudgetId { get; set; }
         public virtual Budget Budget { get; set; }
 
-        //[Index("IX_TemplateName_User_Budget", 2, IsUnique = true)]
         public string UserId { get; set; }
         public virtual User User { get; set; }
     }
