@@ -1,4 +1,5 @@
 ﻿using ExpenseTracker.Business;
+using ExpenseTracker.Persistence.Context;
 using ExpenseTracker.Web.Api.Models.ResponseModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,14 +12,16 @@ namespace ExpenseTracker.Web.Api.Controllers
     [Route("api/budget")]
     public class BudgetController : ExpenseTrackerAuthenticatedControllerBase<BudgetController>
     {
-        public BudgetController(ILogger<BudgetController> logger) : base(logger)
+        readonly ExpenseTrackerContext context;
+        public BudgetController(ILogger<BudgetController> logger, ExpenseTrackerContext context) : base(logger)
         {
+            this.context = context;
         }
 
         [HttpGet]
         public IEnumerable<Budget> GetAll()
         {
-            BudgetBusiness budgetBusiness = new BudgetBusiness();
+            BudgetBusiness budgetBusiness = new BudgetBusiness(context);
             budgetBusiness.GetBudgetListOfUser();
             return null;
             //ExpenseTrackerContext

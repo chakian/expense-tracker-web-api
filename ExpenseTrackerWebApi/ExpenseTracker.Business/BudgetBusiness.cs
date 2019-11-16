@@ -1,14 +1,18 @@
-﻿//using ExpenseTracker.Persistence.Context;
+﻿using ExpenseTracker.Persistence.Context;
 using System.Linq;
 
 namespace ExpenseTracker.Business
 {
     public class BudgetBusiness : BusinessBase
     {
+        public BudgetBusiness(ExpenseTrackerContext context)
+            : base(context)
+        {
+        }
+
         public void GetBudgetListOfUser()
         {
-            //ExpenseTrackerContext context = new ExpenseTrackerContext();
-            //var x = context.Budgets.ToList();
+            var x = context.Budgets.ToList();
         }
     }
 }
