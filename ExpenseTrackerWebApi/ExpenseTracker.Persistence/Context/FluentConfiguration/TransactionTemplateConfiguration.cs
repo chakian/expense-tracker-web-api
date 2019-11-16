@@ -8,6 +8,13 @@ namespace ExpenseTracker.Persistence.Context.FluentConfiguration
         public static void Configure(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TransactionTemplate>()
+                .Property(p => p.Name)
+                .HasMaxLength(250);
+
+            modelBuilder.Entity<TransactionTemplate>().Property(p => p.Amount)
+                .HasColumnType("Money");
+
+            modelBuilder.Entity<TransactionTemplate>()
                 .HasOne(t => t.SourceAccount)
                 .WithMany()
                 .HasForeignKey(t => t.SourceAccountId)

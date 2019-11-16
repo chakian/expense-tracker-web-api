@@ -7,6 +7,11 @@ namespace ExpenseTracker.Persistence.Context.FluentConfiguration
     {
         public static void Configure(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Account>().Property(p => p.CurrentBalance)
+                .HasColumnType("Money");
+            modelBuilder.Entity<Account>().Property(p => p.StartingBalance)
+                .HasColumnType("Money");
+
             modelBuilder.Entity<Account>()
                 .HasMany(e => e.TransactionsBySourceAccount)
                 .WithOne(e=>e.SourceAccount)

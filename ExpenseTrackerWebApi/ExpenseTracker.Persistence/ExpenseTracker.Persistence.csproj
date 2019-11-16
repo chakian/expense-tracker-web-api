@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="Context\DbModels\" />
-    <Folder Include="Context\FluentConfiguration\" />
     <Folder Include="Extensions\" />
     <Folder Include="Identity\" />
   </ItemGroup>

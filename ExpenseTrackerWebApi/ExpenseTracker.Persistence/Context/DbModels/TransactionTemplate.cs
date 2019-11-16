@@ -8,8 +8,6 @@ namespace ExpenseTracker.Persistence.Context.DbModels
     {
         public int Id { get; set; }
 
-        [Column(TypeName = "VARCHAR")]
-        [StringLength(250)]
         //[Index("IX_TemplateName_User_Budget", 0, IsUnique = true)]
         public string Name { get; set; }
         public decimal? Amount { get; set; }

@@ -1,12 +1,12 @@
-//using ExpenseTracker.Persistence.Context;
+using ExpenseTracker.Persistence.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace ExpenseTracker.Web.Api
 {
@@ -31,7 +31,7 @@ namespace ExpenseTracker.Web.Api
                 options.AssumeDefaultVersionWhenUnspecified = true;
             });
 
-            //services.AddDbContext<ExpenseTrackerContext>();
+            services.AddDbContext<ExpenseTrackerContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ExpenseTrackerConnectionString")));
 
             services.AddSwaggerGen(c =>
             {
