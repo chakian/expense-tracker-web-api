@@ -34,11 +34,17 @@ namespace ExpenseTracker.Persistence.Context
 
             BudgetConfiguration.Configure(modelBuilder);
 
+            BudgetPlanCategoryConfiguration.Configure(modelBuilder);
+
             BudgetUserConfiguration.Configure(modelBuilder);
 
             CategoryConfiguration.Configure(modelBuilder);
 
             IdentityConfiguration.Configure(modelBuilder);
+
+            TransactionConfiguration.Configure(modelBuilder);
+
+            TransactionItemConfiguration.Configure(modelBuilder);
 
             TransactionTemplateConfiguration.Configure(modelBuilder);
         }
