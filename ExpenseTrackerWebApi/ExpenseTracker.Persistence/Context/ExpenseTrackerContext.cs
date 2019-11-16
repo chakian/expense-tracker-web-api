@@ -8,6 +8,11 @@ namespace ExpenseTracker.Persistence.Context
 {
     public class ExpenseTrackerContext : IdentityDbContext<User>
     {
+        public ExpenseTrackerContext(DbContextOptions<ExpenseTrackerContext> dbContextOptions)
+            : base(dbContextOptions)
+        {
+        }
+
         public virtual DbSet<Account> Accounts { get; set; }
         public virtual DbSet<AccountType> AccountTypes { get; set; }
         public virtual DbSet<BudgetPlanCategory> BudgetPlanCategories { get; set; }
@@ -37,7 +42,5 @@ namespace ExpenseTracker.Persistence.Context
 
             TransactionTemplateConfiguration.Configure(modelBuilder);
         }
-
-        public static ExpenseTrackerContext Create() => new ExpenseTrackerContext();
     }
 }
