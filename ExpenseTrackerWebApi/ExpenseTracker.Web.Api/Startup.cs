@@ -1,3 +1,4 @@
+//using ExpenseTracker.Persistence.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,8 @@ namespace ExpenseTracker.Web.Api
                 options.DefaultApiVersion = new ApiVersion(1, 0);
                 options.AssumeDefaultVersionWhenUnspecified = true;
             });
+
+            //services.AddDbContext<ExpenseTrackerContext>();
 
             services.AddSwaggerGen(c =>
             {
