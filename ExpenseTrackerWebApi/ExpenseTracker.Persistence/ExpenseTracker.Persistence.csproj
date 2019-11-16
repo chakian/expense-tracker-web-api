@@ -13,7 +13,6 @@
     <Folder Include="Context\DbModels\" />
     <Folder Include="Extensions\" />
     <Folder Include="Identity\" />
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ItemGroup>
