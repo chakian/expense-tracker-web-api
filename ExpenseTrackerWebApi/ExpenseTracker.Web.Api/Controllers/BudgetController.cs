@@ -1,9 +1,9 @@
-﻿using ExpenseTracker.Business;
-using ExpenseTracker.Persistence.Context;
+﻿using ExpenseTracker.Persistence.Context;
 using ExpenseTracker.Web.Api.Models.ResponseModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ExpenseTracker.Web.Api.Controllers
 {
@@ -21,17 +21,17 @@ namespace ExpenseTracker.Web.Api.Controllers
         [HttpGet]
         public IEnumerable<Budget> GetAll()
         {
-            BudgetBusiness budgetBusiness = new BudgetBusiness(context);
-            budgetBusiness.GetBudgetListOfUser();
-            return null;
-            //ExpenseTrackerContext
-            //return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            //{
-            //    Date = DateTime.Now.AddDays(index),
-            //    TemperatureC = rng.Next(-20, 55),
-            //    Summary = Summaries[rng.Next(Summaries.Length)]
-            //})
-            //.ToArray();
+            var budgets = context.Budgets.Where(q=>q.BudgetUsers.Any(u=>u.UserId.Equals(""))).ToList();
+            List<Budget> budgetList = new List<Budget>();
+            budgets.ForEach(b =>
+            {
+                budgetList.Add(new Budget
+                {
+                    Id = b.BudgetId,
+                    Name = b.Name
+                });
+            });
+            return budgetList;
         }
     }
 }

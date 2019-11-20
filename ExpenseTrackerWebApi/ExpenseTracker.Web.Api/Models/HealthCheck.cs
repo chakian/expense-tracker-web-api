@@ -1,4 +1,4 @@
-﻿namespace ExpenseTracker.Web.Api
+﻿namespace ExpenseTracker.Web.Api.Models
 {
     public class HealthCheck
     {
