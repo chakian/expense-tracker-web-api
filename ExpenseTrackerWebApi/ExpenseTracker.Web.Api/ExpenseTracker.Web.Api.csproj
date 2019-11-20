@@ -23,11 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\RequestModels\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ExpenseTracker.Persistence\ExpenseTracker.Persistence.csproj" />
+    <ProjectReference Include="..\ExpenseTracker.Web.Api.Core\ExpenseTracker.Web.Api.Core.csproj" />
   </ItemGroup>
 
 </Project>

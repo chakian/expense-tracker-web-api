@@ -34,6 +34,17 @@ namespace ExpenseTracker.Web.Api
 
             services.AddDbContext<ExpenseTrackerContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ExpenseTrackerConnectionString")));
 
+            // add identity
+            var identityBuilder = services.AddIdentityCore<Persistence.Identity.User>(o =>
+            {
+                // configure identity options
+                o.Password.RequireDigit = false;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequiredLength = 6;
+            });
+
             services.AddSwagger();
         }
 

@@ -5,11 +5,11 @@ namespace ExpenseTracker.Web.Api
 {
     public class ExpenseTrackerControllerBase<T> : ControllerBase
     {
-        protected readonly ILogger<T> _logger;
+        protected readonly ILogger<T> logger;
         
         public ExpenseTrackerControllerBase(ILogger<T> logger)
         {
-            _logger = logger;
+            this.logger = logger;
         }
     }
 }
