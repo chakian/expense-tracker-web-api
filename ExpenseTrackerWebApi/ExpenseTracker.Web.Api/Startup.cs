@@ -1,4 +1,5 @@
 using ExpenseTracker.Persistence.Context;
+using ExpenseTracker.Web.Api.Bootstrap;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -33,10 +34,7 @@ namespace ExpenseTracker.Web.Api
 
             services.AddDbContext<ExpenseTrackerContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ExpenseTrackerConnectionString")));
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ExpenseTracker API", Version = "v1" });
-            });
+            services.AddSwagger();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,15 +53,7 @@ namespace ExpenseTracker.Web.Api
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
-
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ExpenseTracker API V1");
-            });
-
+            app.UseCustomSwagger();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

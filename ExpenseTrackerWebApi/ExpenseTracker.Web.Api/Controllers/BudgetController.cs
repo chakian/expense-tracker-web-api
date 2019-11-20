@@ -21,7 +21,7 @@ namespace ExpenseTracker.Web.Api.Controllers
         [HttpGet]
         public IEnumerable<Budget> GetAll()
         {
-            var budgets = context.Budgets.Where(q=>q.BudgetUsers.Any(u=>u.UserId.Equals(""))).ToList();
+            var budgets = context.Budgets.ToList();//.Where(q=>q.BudgetUsers.Any(u=>u.UserId.Equals(""))).ToList();
             List<Budget> budgetList = new List<Budget>();
             budgets.ForEach(b =>
             {
