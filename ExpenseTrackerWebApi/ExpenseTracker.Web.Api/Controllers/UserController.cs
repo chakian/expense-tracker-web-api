@@ -1,6 +1,4 @@
-﻿using ExpenseTracker.Web.Api.Core.Dto.UseCaseRequests;
-using ExpenseTracker.Web.Api.Core.Interfaces.UseCases;
-using ExpenseTracker.Web.Api.Presenters;
+﻿using ExpenseTracker.Web.Api.Models.UserModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
@@ -12,27 +10,29 @@ namespace ExpenseTracker.Web.Api.Controllers
     [Route("api/user")]
     public class UserController : ExpenseTrackerControllerBase<UserController>
     {
-        private readonly IRegisterUserUseCase _registerUserUseCase;
-        private readonly RegisterUserPresenter _registerUserPresenter;
+        private readonly IUserService _userService;
 
-        public UserController(ILogger<UserController> logger,
-            IRegisterUserUseCase registerUserUseCase, 
-            RegisterUserPresenter registerUserPresenter)
+        public UserController(ILogger<UserController> logger, IUserService userService)
             : base(logger)
         {
-            _registerUserUseCase = registerUserUseCase;
-            _registerUserPresenter = registerUserPresenter;
+            _userService = userService;
         }
 
         [HttpPost]
-        public async Task<ActionResult> Register([FromBody] RegisterUserRequest request)
+        [Route("authenticate")]
+        public async Task<ActionResult> Authenticate([FromBody] AuthenticateModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            await _registerUserUseCase.Handle(new RegisterUserRequest(request.FirstName, request.LastName, request.Email, request.Username, request.Password), _registerUserPresenter);
-            return _registerUserPresenter.ContentResult;
+
+            var user = await _userService.Authenticate(model.Username, model.Password);
+            
+            if (user == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(user);
         }
     }
 }
