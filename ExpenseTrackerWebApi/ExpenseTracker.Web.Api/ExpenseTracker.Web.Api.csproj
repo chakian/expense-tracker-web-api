@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExpenseTracker.Persistence\ExpenseTracker.Persistence.csproj" />
-    <ProjectReference Include="..\ExpenseTracker.Web.Api.Core\ExpenseTracker.Web.Api.Core.csproj" />
   </ItemGroup>
 
 </Project>

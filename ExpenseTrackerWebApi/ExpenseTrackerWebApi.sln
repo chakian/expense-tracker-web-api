@@ -13,8 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpenseTracker.Persistence", "ExpenseTracker.Persistence\ExpenseTracker.Persistence.csproj", "{949DB279-C0FA-4B51-8356-7EE03E131DFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseTracker.Web.Api.Core", "ExpenseTracker.Web.Api.Core\ExpenseTracker.Web.Api.Core.csproj", "{C2F2128E-E972-4407-95FB-A27328EEE220}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{949DB279-C0FA-4B51-8356-7EE03E131DFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{949DB279-C0FA-4B51-8356-7EE03E131DFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{949DB279-C0FA-4B51-8356-7EE03E131DFA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C2F2128E-E972-4407-95FB-A27328EEE220}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2F2128E-E972-4407-95FB-A27328EEE220}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2F2128E-E972-4407-95FB-A27328EEE220}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2F2128E-E972-4407-95FB-A27328EEE220}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -40,7 +34,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{27B06A8C-E79C-4035-8D82-50E9E0447867} = {629898C8-F518-4C1D-848E-44E2AB716712}
 		{949DB279-C0FA-4B51-8356-7EE03E131DFA} = {5FEAB343-A80D-4C07-9CC5-A7D74D9D2BA2}
-		{C2F2128E-E972-4407-95FB-A27328EEE220} = {629898C8-F518-4C1D-848E-44E2AB716712}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0EC0C57F-24C5-4792-AEFD-90F35AA73FF0}
