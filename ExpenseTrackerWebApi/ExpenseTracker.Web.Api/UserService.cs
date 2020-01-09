@@ -1,4 +1,5 @@
 ﻿using ExpenseTracker.Persistence.Context;
+using ExpenseTracker.Persistence.Identity;
 using ExpenseTracker.Web.Api.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -14,6 +15,7 @@ namespace ExpenseTracker.Web.Api
     public interface IUserService
     {
         Task<UserModel> Authenticate(string username, string password);
+        Task Register(UserModel userModel);
     }
 
     public class UserService : IUserService
@@ -44,7 +46,8 @@ namespace ExpenseTracker.Web.Api
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddDays(7),
+                //Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddSeconds(20),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -57,11 +60,31 @@ namespace ExpenseTracker.Web.Api
 
             return userModel;
         }
+
+        public async Task Register(UserModel userModel)
+        {
+            User user = new User()
+            {
+                UserName = userModel.Username,
+                PasswordHash = userModel.Password,
+                EmailConfirmed = false,
+                PhoneNumberConfirmed = false,
+                TwoFactorEnabled = false,
+                LockoutEnabled = false,
+                AccessFailedCount = 0,
+                IsActive = true,
+                InsertTime = DateTime.Now,
+                Email = "test@test.com"
+            };
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+        }
     }
 
     public class UserModel
     {
         public string Username { get; set; }
+        public string Password { get; set; }
         public string Token { get; set; }
     }
 }

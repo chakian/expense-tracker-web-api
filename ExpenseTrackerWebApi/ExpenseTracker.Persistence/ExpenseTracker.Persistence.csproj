@@ -7,11 +7,12 @@
   <ItemGroup>
     <Compile Remove="Migrations\20191116111917_InitialMigration.cs" />
     <Compile Remove="Migrations\20191116111917_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200108203717_IdentityTest.cs" />
+    <Compile Remove="Migrations\20200108203717_IdentityTest.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Context\DbModels\" />
-    <Folder Include="Extensions\" />
     <Folder Include="Identity\" />
   </ItemGroup>
 

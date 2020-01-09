@@ -34,5 +34,19 @@ namespace ExpenseTracker.Web.Api.Controllers
 
             return Ok(user);
         }
+
+        [HttpPost]
+        [Route("register")]
+        public async Task<ActionResult> Register([FromBody] UserModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _userService.Register(model);
+
+            return Ok();
+        }
     }
 }

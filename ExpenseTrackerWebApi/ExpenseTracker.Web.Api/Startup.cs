@@ -1,6 +1,5 @@
 using ExpenseTracker.Persistence.Context;
 using ExpenseTracker.Web.Api.Bootstrap;
-using ExpenseTracker.Web.Api.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,8 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace ExpenseTracker.Web.Api
 {
@@ -38,32 +35,13 @@ namespace ExpenseTracker.Web.Api
 
             services.AddDbContext<ExpenseTrackerContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ExpenseTrackerConnectionString")));
 
-            //get jwt options
-            var jwtOptionsSection = Configuration.GetSection("JwtOptions");
-            services.Configure<JwtOptions>(jwtOptionsSection);
-            var jwtOptions = jwtOptionsSection.Get<JwtOptions>();
-            var key = Encoding.ASCII.GetBytes(jwtOptions.Secret);
-
             services.AddAuthentication(o =>
             {
                 o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 //o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-                .AddJwtBearer(x=>
-                {
-                    x.RequireHttpsMetadata = false; //TODO: Delete when publishing
-                    x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        //RequireExpirationTime = false,
-                        //ValidateLifetime = true
-                    };
-                });
+                .AddCustomJwtBearer(services, Configuration);
 
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
@@ -92,7 +70,7 @@ namespace ExpenseTracker.Web.Api
                 .AllowAnyHeader());
 
             app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthorization();
 
             app.UseCustomSwagger();
             app.UseEndpoints(endpoints =>
