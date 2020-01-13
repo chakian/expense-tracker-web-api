@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Context\DbModels\" />
     <Folder Include="Identity\" />
   </ItemGroup>
 
