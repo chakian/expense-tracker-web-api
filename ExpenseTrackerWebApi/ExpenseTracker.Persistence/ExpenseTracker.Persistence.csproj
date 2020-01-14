@@ -9,6 +9,8 @@
     <Compile Remove="Migrations\20191116111917_InitialMigration.Designer.cs" />
     <Compile Remove="Migrations\20200108203717_IdentityTest.cs" />
     <Compile Remove="Migrations\20200108203717_IdentityTest.Designer.cs" />
+    <Compile Remove="Migrations\20200114193655_UserInternalToken.cs" />
+    <Compile Remove="Migrations\20200114193655_UserInternalToken.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +31,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ExpenseTracker.Common.Interfaces\ExpenseTracker.Common.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

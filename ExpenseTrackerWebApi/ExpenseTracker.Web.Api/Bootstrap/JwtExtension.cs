@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 
 namespace ExpenseTracker.Web.Api.Bootstrap
 {
@@ -25,8 +26,10 @@ namespace ExpenseTracker.Web.Api.Bootstrap
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
+                    ValidateIssuer = true,
+                    ValidIssuer = "https://expense.cagdaskorkut.com/api",
+                    ValidateAudience = true,
+                    ValidAudiences = new List<string>() { "api://web", "api://mobile" },
                     //RequireExpirationTime = false,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero

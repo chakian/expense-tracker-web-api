@@ -13,6 +13,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpenseTracker.Persistence", "ExpenseTracker.Persistence\ExpenseTracker.Persistence.csproj", "{949DB279-C0FA-4B51-8356-7EE03E131DFA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpenseTracker.Business", "ExpenseTracker.Business\ExpenseTracker.Business.csproj", "{F9200834-33D2-45E5-A420-67E28C1BEBB8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{55A0C4A7-9772-496D-BF2A-B82A777A2565}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpenseTracker.Common.Interfaces", "ExpenseTracker.Common.Interfaces\ExpenseTracker.Common.Interfaces.csproj", "{1DB5ABDC-4446-4480-A634-CF3F30612C6F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpenseTracker.Common.Utils", "ExpenseTracker.Common.Utils\ExpenseTracker.Common.Utils.csproj", "{C2CA4B4E-57CB-462A-BC76-DAB6D6088461}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseTracker.Models", "ExpenseTracker.Models\ExpenseTracker.Models.csproj", "{0F05DA61-F4CB-4CA5-8019-D56E4C4C4A88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +37,22 @@ Global
 		{949DB279-C0FA-4B51-8356-7EE03E131DFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{949DB279-C0FA-4B51-8356-7EE03E131DFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{949DB279-C0FA-4B51-8356-7EE03E131DFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9200834-33D2-45E5-A420-67E28C1BEBB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9200834-33D2-45E5-A420-67E28C1BEBB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9200834-33D2-45E5-A420-67E28C1BEBB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9200834-33D2-45E5-A420-67E28C1BEBB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DB5ABDC-4446-4480-A634-CF3F30612C6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DB5ABDC-4446-4480-A634-CF3F30612C6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DB5ABDC-4446-4480-A634-CF3F30612C6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DB5ABDC-4446-4480-A634-CF3F30612C6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2CA4B4E-57CB-462A-BC76-DAB6D6088461}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2CA4B4E-57CB-462A-BC76-DAB6D6088461}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2CA4B4E-57CB-462A-BC76-DAB6D6088461}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2CA4B4E-57CB-462A-BC76-DAB6D6088461}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F05DA61-F4CB-4CA5-8019-D56E4C4C4A88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F05DA61-F4CB-4CA5-8019-D56E4C4C4A88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F05DA61-F4CB-4CA5-8019-D56E4C4C4A88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F05DA61-F4CB-4CA5-8019-D56E4C4C4A88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -34,6 +60,10 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{27B06A8C-E79C-4035-8D82-50E9E0447867} = {629898C8-F518-4C1D-848E-44E2AB716712}
 		{949DB279-C0FA-4B51-8356-7EE03E131DFA} = {5FEAB343-A80D-4C07-9CC5-A7D74D9D2BA2}
+		{F9200834-33D2-45E5-A420-67E28C1BEBB8} = {629898C8-F518-4C1D-848E-44E2AB716712}
+		{1DB5ABDC-4446-4480-A634-CF3F30612C6F} = {55A0C4A7-9772-496D-BF2A-B82A777A2565}
+		{C2CA4B4E-57CB-462A-BC76-DAB6D6088461} = {55A0C4A7-9772-496D-BF2A-B82A777A2565}
+		{0F05DA61-F4CB-4CA5-8019-D56E4C4C4A88} = {629898C8-F518-4C1D-848E-44E2AB716712}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0EC0C57F-24C5-4792-AEFD-90F35AA73FF0}

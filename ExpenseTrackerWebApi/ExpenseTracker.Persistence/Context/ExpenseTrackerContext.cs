@@ -1,4 +1,5 @@
-﻿using ExpenseTracker.Persistence.Context.DbModels;
+﻿using ExpenseTracker.Common.Interfaces.DbContext;
+using ExpenseTracker.Persistence.Context.DbModels;
 using ExpenseTracker.Persistence.Context.FluentConfiguration;
 using ExpenseTracker.Persistence.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -6,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTracker.Persistence.Context
 {
-    public class ExpenseTrackerContext : IdentityDbContext<User>
+    public class ExpenseTrackerContext : IdentityDbContext<User>, IDbContext
     {
         public ExpenseTrackerContext(DbContextOptions<ExpenseTrackerContext> dbContextOptions)
             : base(dbContextOptions)
@@ -23,6 +24,7 @@ namespace ExpenseTracker.Persistence.Context
         public virtual DbSet<Currency> Currencies { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<TransactionTemplate> TransactionTemplates { get; set; }
+        public virtual DbSet<UserInternalToken> UserInternalTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
