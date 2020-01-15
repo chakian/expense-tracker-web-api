@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ExpenseTracker.Web.Api
 {
-    public class ExpenseTrackerControllerBase<T> : ControllerBase
+    public abstract class ExpenseTrackerControllerBase<T> : ControllerBase
     {
         protected readonly ILogger<T> logger;
         

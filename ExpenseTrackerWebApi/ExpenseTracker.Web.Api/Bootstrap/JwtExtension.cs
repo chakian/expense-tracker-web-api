@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using ExpenseTracker.Web.Api.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using ExpenseTracker.Business.Options;
 
 namespace ExpenseTracker.Web.Api.Bootstrap
 {
@@ -28,7 +28,7 @@ namespace ExpenseTracker.Web.Api.Bootstrap
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = true,
                     ValidIssuer = "https://expense.cagdaskorkut.com/api",
-                    ValidateAudience = true,
+                    ValidateAudience = false,
                     ValidAudiences = new List<string>() { "api://web", "api://mobile" },
                     //RequireExpirationTime = false,
                     ValidateLifetime = true,

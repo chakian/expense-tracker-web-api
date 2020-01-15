@@ -6,6 +6,6 @@ namespace ExpenseTracker.Business.Interfaces
 {
     public interface IUserInternalTokenBusiness
     {
-        void WriteToken(string token, string userId, string issuer, string creatingIp, DateTime validFrom, DateTime validTo, bool isValid = true);
+        Task WriteToken(string token, string userId, string issuer, string creatingIp, DateTime validFrom, DateTime validTo, bool isValid = true);
     }
 }

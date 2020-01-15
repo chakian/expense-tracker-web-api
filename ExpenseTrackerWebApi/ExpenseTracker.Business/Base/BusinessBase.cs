@@ -1,9 +1,17 @@
 ﻿using ExpenseTracker.Models.Base;
+using Microsoft.Extensions.Logging;
 
 namespace ExpenseTracker.Business.Base
 {
-    public class BusinessBase
+    public class BusinessBase<T>
     {
+        protected readonly ILogger<T> logger;
+
+        public BusinessBase(ILogger<T> logger)
+        {
+            this.logger = logger;
+        }
+
         protected BaseResponse.OperationResult GetOkResult(string message = "") //TODO: Maybe a generic success message here?
         {
             BaseResponse.OperationResult result = new BaseResponse.OperationResult()
