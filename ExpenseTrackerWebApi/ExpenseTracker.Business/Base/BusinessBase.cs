@@ -3,15 +3,8 @@ using Microsoft.Extensions.Logging;
 
 namespace ExpenseTracker.Business.Base
 {
-    public class BusinessBase<T>
+    public class BusinessBase
     {
-        protected readonly ILogger<T> logger;
-
-        public BusinessBase(ILogger<T> logger)
-        {
-            this.logger = logger;
-        }
-
         protected BaseResponse.OperationResult GetOkResult(string message = "") //TODO: Maybe a generic success message here?
         {
             BaseResponse.OperationResult result = new BaseResponse.OperationResult()
@@ -32,6 +25,16 @@ namespace ExpenseTracker.Business.Base
                 Message = message
             };
             return result;
+        }
+    }
+
+    public class BusinessBase<T> : BusinessBase
+    {
+        protected readonly ILogger<T> logger;
+
+        public BusinessBase(ILogger<T> logger)
+        {
+            this.logger = logger;
         }
     }
 }
