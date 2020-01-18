@@ -41,7 +41,7 @@ namespace ExpenseTracker.Web.Api.Controllers
             }
             else
             {
-                return StatusCode(500, authenticationResponse.Result);
+                return StatusCode(400, authenticationResponse.Result);
             }
         }
 
@@ -69,7 +69,7 @@ namespace ExpenseTracker.Web.Api.Controllers
             }
             else
             {
-                return StatusCode(500, response.Result);
+                return StatusCode(400, response.Result);
             }
         }
     }
