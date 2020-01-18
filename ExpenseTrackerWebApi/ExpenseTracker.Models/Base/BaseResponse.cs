@@ -4,6 +4,11 @@ namespace ExpenseTracker.Models.Base
 {
     public class BaseResponse
     {
+        public BaseResponse()
+        {
+            Result = new OperationResult();
+        }
+
         public OperationResult Result { get; set; }
 
         public bool IsSuccessful

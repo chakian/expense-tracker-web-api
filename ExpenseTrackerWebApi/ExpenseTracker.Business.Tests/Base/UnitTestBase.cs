@@ -53,7 +53,7 @@ namespace ExpenseTracker.Business.Tests
             Assert.NotNull(response);
             Assert.NotNull(response.Result);
             Assert.True(response.Result.IsSuccessful);
-            Assert.Empty(response.Result.Errors);
+            Assert.Null(response.Result.Errors);
         }
     }
 }
