@@ -1,9 +1,7 @@
-﻿using ExpenseTracker.Common.Constants;
-using ExpenseTracker.Models.Base;
+﻿using ExpenseTracker.Models.Base;
 using ExpenseTracker.Persistence.Context;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using System;
 using Xunit;
@@ -16,24 +14,16 @@ namespace ExpenseTracker.Business.Tests
         private LoggerFactory loggerFactory;
         protected ExpenseTrackerContext DbContext { get; private set; }
 
-        public UnitTestBase(ITestOutputHelper testOutputHelper, bool useInMemory = false)
+        public UnitTestBase(ITestOutputHelper testOutputHelper)
         {
             var builder = new DbContextOptionsBuilder<ExpenseTrackerContext>();
-            
-            if (useInMemory)
-            {
-                builder
-                    .UseInMemoryDatabase(databaseName: "defaultDb")
-                    .EnableSensitiveDataLogging(true);
-            }
-            else
-            {
-                var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
-                var connectionString = connectionStringBuilder.ToString();
-                var connection = new SqliteConnection(connectionString);
-                connection.Open();
-                builder.UseSqlite(connection);
-            }
+
+            var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
+            var connectionString = connectionStringBuilder.ToString();
+            var connection = new SqliteConnection(connectionString);
+            connection.Open();
+            builder.UseSqlite(connection);
+
             DbContext = new ExpenseTrackerContext(builder.Options);
             DbContext.Database.EnsureCreated();
 
