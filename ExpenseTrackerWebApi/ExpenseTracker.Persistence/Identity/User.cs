@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpenseTracker.Persistence.Identity
@@ -7,6 +8,9 @@ namespace ExpenseTracker.Persistence.Identity
     [Table("Users")]
     public class User : IdentityUser
     {
+        [Required]
+        public override string Email { get; set; }
+
         public bool IsActive { get; set; }
 
         public string InsertUserId { get; set; }

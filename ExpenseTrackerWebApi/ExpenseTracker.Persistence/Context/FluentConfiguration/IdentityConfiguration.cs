@@ -11,6 +11,9 @@ namespace ExpenseTracker.Persistence.Context.FluentConfiguration
                 .ToTable("Users");
 
             modelBuilder.Entity<User>()
+                .HasIndex(q => q.Email).IsUnique();
+
+            modelBuilder.Entity<User>()
                 .HasOne(s => s.InsertUser)
                 .WithMany()
                 .HasForeignKey(e => e.InsertUserId);
