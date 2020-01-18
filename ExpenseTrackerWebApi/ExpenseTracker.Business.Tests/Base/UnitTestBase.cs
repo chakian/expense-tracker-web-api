@@ -1,8 +1,12 @@
-﻿using ExpenseTracker.Persistence.Context;
+﻿using ExpenseTracker.Common.Constants;
+using ExpenseTracker.Models.Base;
+using ExpenseTracker.Persistence.Context;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
-using Serilog;
 using System;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace ExpenseTracker.Business.Tests
@@ -12,25 +16,29 @@ namespace ExpenseTracker.Business.Tests
         private LoggerFactory loggerFactory;
         protected ExpenseTrackerContext DbContext { get; private set; }
 
-        public UnitTestBase(ITestOutputHelper testOutputHelper, string dbName = "defaultDb")
+        public UnitTestBase(ITestOutputHelper testOutputHelper, bool useInMemory = false)
         {
-            var options = new DbContextOptionsBuilder<ExpenseTrackerContext>()
-                .UseInMemoryDatabase(databaseName: dbName)
-                .EnableSensitiveDataLogging(true)
-                .Options;
-
-            DbContext = new ExpenseTrackerContext(options);
-
+            var builder = new DbContextOptionsBuilder<ExpenseTrackerContext>();
+            
+            if (useInMemory)
+            {
+                builder
+                    .UseInMemoryDatabase(databaseName: "defaultDb")
+                    .EnableSensitiveDataLogging(true);
+            }
+            else
+            {
+                var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
+                var connectionString = connectionStringBuilder.ToString();
+                var connection = new SqliteConnection(connectionString);
+                connection.Open();
+                builder.UseSqlite(connection);
+            }
+            DbContext = new ExpenseTrackerContext(builder.Options);
             DbContext.Database.EnsureCreated();
 
             loggerFactory = new LoggerFactory();
             loggerFactory.AddProvider(new XunitLoggerProvider(testOutputHelper));
-
-            Log.Logger = new LoggerConfiguration()
-                .Enrich.FromLogContext()
-                .MinimumLevel.Debug()
-                .WriteTo.Logger(l => l.WriteTo.Console(Serilog.Events.LogEventLevel.Debug))
-                .CreateLogger();
         }
 
         public void Dispose() => DbContext.Database.EnsureDeleted();
@@ -39,55 +47,13 @@ namespace ExpenseTracker.Business.Tests
         {
             return loggerFactory.CreateLogger<T>();
         }
-    }
 
-    public class XunitLoggerProvider : ILoggerProvider
-    {
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        public XunitLoggerProvider(ITestOutputHelper testOutputHelper)
+        protected void AssertSuccessCase(BaseResponse response)
         {
-            _testOutputHelper = testOutputHelper;
-        }
-
-        Microsoft.Extensions.Logging.ILogger ILoggerProvider.CreateLogger(string categoryName)
-        {
-            return new XunitLogger(_testOutputHelper, categoryName);
-        }
-
-        public void Dispose()
-        { }
-    }
-
-    public class XunitLogger : Microsoft.Extensions.Logging.ILogger
-    {
-        private readonly ITestOutputHelper _testOutputHelper;
-        private readonly string _categoryName;
-
-        public XunitLogger(ITestOutputHelper testOutputHelper, string categoryName)
-        {
-            _testOutputHelper = testOutputHelper;
-            _categoryName = categoryName;
-        }
-
-        public IDisposable BeginScope<TState>(TState state)
-            => NoopDisposable.Instance;
-
-        public bool IsEnabled(LogLevel logLevel)
-            => true;
-
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
-        {
-            _testOutputHelper.WriteLine($"{_categoryName} [{eventId}] {formatter(state, exception)}");
-            if (exception != null)
-                _testOutputHelper.WriteLine(exception.ToString());
-        }
-
-        private class NoopDisposable : IDisposable
-        {
-            public static NoopDisposable Instance = new NoopDisposable();
-            public void Dispose()
-            { }
+            Assert.NotNull(response);
+            Assert.NotNull(response.Result);
+            Assert.True(response.Result.IsSuccessful);
+            Assert.Empty(response.Result.Errors);
         }
     }
 }
