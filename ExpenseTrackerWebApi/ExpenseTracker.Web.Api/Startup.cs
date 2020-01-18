@@ -1,5 +1,5 @@
 using ExpenseTracker.Business;
-using ExpenseTracker.Business.Extensions;
+using ExpenseTracker.Business.Bootstrap;
 using ExpenseTracker.Business.Interfaces;
 using ExpenseTracker.Web.Api.Bootstrap;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
