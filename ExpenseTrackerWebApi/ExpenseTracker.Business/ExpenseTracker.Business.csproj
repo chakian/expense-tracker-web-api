@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ExpenseTracker.Common.Constants\ExpenseTracker.Common.Constants.csproj" />
     <ProjectReference Include="..\ExpenseTracker.Common.Utils\ExpenseTracker.Common.Utils.csproj" />
+    <ProjectReference Include="..\ExpenseTracker.Language\ExpenseTracker.Language.csproj" />
     <ProjectReference Include="..\ExpenseTracker.Models\ExpenseTracker.Models.csproj" />
     <ProjectReference Include="..\ExpenseTracker.Persistence\ExpenseTracker.Persistence.csproj" />
   </ItemGroup>

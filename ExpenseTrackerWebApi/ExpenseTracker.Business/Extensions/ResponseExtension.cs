@@ -1,4 +1,5 @@
-﻿using ExpenseTracker.Models.Base;
+﻿using ExpenseTracker.Language;
+using ExpenseTracker.Models.Base;
 using System.Collections.Generic;
 
 namespace ExpenseTracker.Business.Extensions
@@ -9,6 +10,12 @@ namespace ExpenseTracker.Business.Extensions
         {
             if (response.Result == null) response.Result = new BaseResponse.OperationResult();
             if (response.Result.Errors == null) response.Result.Errors = new List<BaseResponse.OperationResult.Error>();
+
+            if (string.IsNullOrEmpty(message))
+            {
+                var resourceText = Resources.ResourceManager.GetString(errorCode);
+                if (!string.IsNullOrEmpty(resourceText)) message = resourceText;
+            }
 
             response.Result.Errors.Add(new BaseResponse.OperationResult.Error()
             {

@@ -79,7 +79,8 @@ namespace ExpenseTracker.Business.Tests.UserTests
             Assert.NotNull(actual);
             Assert.NotNull(actual.Result);
             Assert.False(actual.Result.IsSuccessful);
-            Assert.Contains(actual.Result.Errors, q => q.ErrorCode == ErrorCodes.REGISTER_EMAIL_EXISTS);
+            Assert.Single(actual.Result.Errors);
+            Assert.Equal(ErrorCodes.REGISTER_EMAIL_EXISTS, actual.Result.Errors[0].ErrorCode);
             Assert.Null(actual.Token);
         }
 
@@ -105,7 +106,8 @@ namespace ExpenseTracker.Business.Tests.UserTests
             Assert.NotNull(actual);
             Assert.NotNull(actual.Result);
             Assert.False(actual.Result.IsSuccessful);
-            Assert.Contains(actual.Result.Errors, q => q.ErrorCode == ErrorCodes.REGISTER_EMAIL_EMPTY);
+            Assert.Single(actual.Result.Errors);
+            Assert.Equal(ErrorCodes.REGISTER_EMAIL_EMPTY, actual.Result.Errors[0].ErrorCode);
             Assert.Null(actual.Token);
         }
 
@@ -131,8 +133,91 @@ namespace ExpenseTracker.Business.Tests.UserTests
             Assert.NotNull(actual);
             Assert.NotNull(actual.Result);
             Assert.False(actual.Result.IsSuccessful);
+            Assert.Equal(2, actual.Result.Errors.Count);
             Assert.Contains(actual.Result.Errors, q => q.ErrorCode == ErrorCodes.REGISTER_EMAIL_EMPTY);
             Assert.Contains(actual.Result.Errors, q => q.ErrorCode == ErrorCodes.REGISTER_NAME_EMPTY);
+            Assert.Null(actual.Token);
+        }
+
+        [Fact]
+        public void RegisterUser_Fail_PasswordEmpty()
+        {
+            // Arrange
+            IUserBusiness userBusiness = new UserBusiness(DbContext, GetLogger<UserBusiness>(), jwtOptions, userInternalTokenBusiness);
+            RegisterUserRequest registerUserRequest = new RegisterUserRequest()
+            {
+                Email = "test@test.com",
+                Name = "test",
+                Password = "",
+                PasswordRepeat = "",
+                Culture = "",
+                RequestIp = ""
+            };
+
+            // Act
+            var actual = userBusiness.RegisterUser(registerUserRequest).Result;
+
+            // Assert
+            Assert.NotNull(actual);
+            Assert.NotNull(actual.Result);
+            Assert.False(actual.Result.IsSuccessful);
+            Assert.Equal(2, actual.Result.Errors.Count);
+            Assert.Contains(actual.Result.Errors, q => q.ErrorCode == ErrorCodes.REGISTER_PASSWORD_EMPTY);
+            Assert.Contains(actual.Result.Errors, q => q.ErrorCode == ErrorCodes.REGISTER_PASSWORD_NOT_SAFE);
+            Assert.Null(actual.Token);
+        }
+
+        [Fact]
+        public void RegisterUser_Fail_PasswordNotEqual()
+        {
+            // Arrange
+            IUserBusiness userBusiness = new UserBusiness(DbContext, GetLogger<UserBusiness>(), jwtOptions, userInternalTokenBusiness);
+            RegisterUserRequest registerUserRequest = new RegisterUserRequest()
+            {
+                Email = "test@test.com",
+                Name = "test",
+                Password = "1234567",
+                PasswordRepeat = "123456",
+                Culture = "",
+                RequestIp = ""
+            };
+
+            // Act
+            var actual = userBusiness.RegisterUser(registerUserRequest).Result;
+
+            // Assert
+            Assert.NotNull(actual);
+            Assert.NotNull(actual.Result);
+            Assert.False(actual.Result.IsSuccessful);
+            Assert.Single(actual.Result.Errors);
+            Assert.Equal(ErrorCodes.REGISTER_PASSWORD_NOT_EQUAL, actual.Result.Errors[0].ErrorCode);
+            Assert.Null(actual.Token);
+        }
+
+        [Fact]
+        public void RegisterUser_Fail_PasswordNotSafe()
+        {
+            // Arrange
+            IUserBusiness userBusiness = new UserBusiness(DbContext, GetLogger<UserBusiness>(), jwtOptions, userInternalTokenBusiness);
+            RegisterUserRequest registerUserRequest = new RegisterUserRequest()
+            {
+                Email = "test@test.com",
+                Name = "test",
+                Password = "12345",
+                PasswordRepeat = "12345",
+                Culture = "",
+                RequestIp = ""
+            };
+
+            // Act
+            var actual = userBusiness.RegisterUser(registerUserRequest).Result;
+
+            // Assert
+            Assert.NotNull(actual);
+            Assert.NotNull(actual.Result);
+            Assert.False(actual.Result.IsSuccessful);
+            Assert.Single(actual.Result.Errors);
+            Assert.Equal(ErrorCodes.REGISTER_PASSWORD_NOT_SAFE, actual.Result.Errors[0].ErrorCode);
             Assert.Null(actual.Token);
         }
     }
