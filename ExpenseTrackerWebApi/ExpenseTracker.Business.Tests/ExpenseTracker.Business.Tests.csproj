@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -33,11 +33,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ExpenseTracker.Business\ExpenseTracker.Business.csproj" />
     <ProjectReference Include="..\ExpenseTracker.Common.Constants\ExpenseTracker.Common.Constants.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="TestReports\Coverage\" />
-    <Folder Include="TestReports\UnitTests\" />
   </ItemGroup>
 
 </Project>
