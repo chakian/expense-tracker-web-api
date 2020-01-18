@@ -3,7 +3,7 @@ using ExpenseTracker.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ExpenseTracker.Business.Extensions
+namespace ExpenseTracker.Business.Bootstrap
 {
     public static class StartupExtension
     {
