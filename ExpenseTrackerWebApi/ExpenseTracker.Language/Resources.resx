@@ -138,4 +138,10 @@
   <data name="ET-001-007" xml:space="preserve">
     <value>İsim boş bırakılamaz</value>
   </data>
+  <data name="ET-001-008" xml:space="preserve">
+    <value>Bu email adresi ile kayıtlı bir kullanıcı yok</value>
+  </data>
+  <data name="ET-001-009" xml:space="preserve">
+    <value>Hatalı şifre</value>
+  </data>
 </root>

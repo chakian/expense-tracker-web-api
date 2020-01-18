@@ -122,5 +122,23 @@ namespace ExpenseTracker.Language {
                 return ResourceManager.GetString("ET-001-007", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bu email adresi ile kayıtlı bir kullanıcı yok.
+        /// </summary>
+        public static string ET_001_008 {
+            get {
+                return ResourceManager.GetString("ET-001-008", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hatalı şifre.
+        /// </summary>
+        public static string ET_001_009 {
+            get {
+                return ResourceManager.GetString("ET-001-009", resourceCulture);
+            }
+        }
     }
 }

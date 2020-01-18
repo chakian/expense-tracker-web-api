@@ -80,11 +80,11 @@ namespace ExpenseTracker.Business
 
             if (user == null)
             {
-                response.AddError("Username or password is incorrect");
+                response.AddError(ErrorCodes.LOGIN_EMAIL_NOT_FOUND);
             }
             else if (user.PasswordHash != EncryptionUtils.GetHash(request.Password))
             {
-                response.AddError("Username or password is incorrect");
+                response.AddError(ErrorCodes.LOGIN_WRONG_PASSWORD);
 
                 user.AccessFailedCount++;
                 await dbContext.SaveChangesAsync();
