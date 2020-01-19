@@ -5,7 +5,7 @@ namespace ExpenseTracker.Business.Interfaces
 {
     public interface IUserBusiness
     {
-        Task<RegisterUserResponse> RegisterUser(RegisterUserRequest user);
+        Task<CreateUserResponse> CreateUser(CreateUserRequest user);
         Task<AuthenticateUserResponse> AuthenticateUser(AuthenticateUserRequest user);
     }
 }

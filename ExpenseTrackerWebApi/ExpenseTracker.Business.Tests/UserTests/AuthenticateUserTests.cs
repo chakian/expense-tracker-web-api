@@ -31,7 +31,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             DbContext.SaveChanges();
             var expectedUserId = DbContext.Users.Single().Id;
 
-            IUserBusiness userBusiness = new UserBusiness(DbContext, GetLogger<UserBusiness>(), jwtOptions, userInternalTokenBusiness);
+            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
             AuthenticateUserRequest authenticateUserRequest = new AuthenticateUserRequest()
             {
                 Email = "test@test.com",
@@ -64,7 +64,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         public void AuthenticateUser_Fail_WrongEmail()
         {
             // Arrange
-            IUserBusiness userBusiness = new UserBusiness(DbContext, GetLogger<UserBusiness>(), jwtOptions, userInternalTokenBusiness);
+            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
             AuthenticateUserRequest authenticateUserRequest = new AuthenticateUserRequest()
             {
                 Email = "test@test.com",
@@ -77,11 +77,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             var actual = userBusiness.AuthenticateUser(authenticateUserRequest).Result;
 
             // Assert
-            Assert.NotNull(actual);
-            Assert.NotNull(actual.Result);
-            Assert.False(actual.Result.IsSuccessful);
-            Assert.Single(actual.Result.Errors);
-            Assert.Equal(ErrorCodes.LOGIN_EMAIL_NOT_FOUND, actual.Result.Errors[0].ErrorCode);
+            AssertSingleErrorCase(actual, ErrorCodes.LOGIN_EMAIL_NOT_FOUND);
             Assert.Null(actual.Token);
         }
 
@@ -98,7 +94,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             DbContext.SaveChanges();
             var expectedUserId = DbContext.Users.Single().Id;
 
-            IUserBusiness userBusiness = new UserBusiness(DbContext, GetLogger<UserBusiness>(), jwtOptions, userInternalTokenBusiness);
+            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
             AuthenticateUserRequest authenticateUserRequest = new AuthenticateUserRequest()
             {
                 Email = "test@test.com",
@@ -111,11 +107,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             var actual = userBusiness.AuthenticateUser(authenticateUserRequest).Result;
 
             // Assert
-            Assert.NotNull(actual);
-            Assert.NotNull(actual.Result);
-            Assert.False(actual.Result.IsSuccessful);
-            Assert.Single(actual.Result.Errors);
-            Assert.Equal(ErrorCodes.LOGIN_WRONG_PASSWORD, actual.Result.Errors[0].ErrorCode);
+            AssertSingleErrorCase(actual, ErrorCodes.LOGIN_WRONG_PASSWORD);
             Assert.Null(actual.Token);
         }
     }

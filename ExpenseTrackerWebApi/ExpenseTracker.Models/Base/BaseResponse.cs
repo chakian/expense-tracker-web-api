@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using ExpenseTracker.Common.Interfaces.Models;
+using System.Collections.Generic;
 
 namespace ExpenseTracker.Models.Base
 {
-    public class BaseResponse
+    public class BaseResponse : IBaseResponse
     {
         public BaseResponse()
         {

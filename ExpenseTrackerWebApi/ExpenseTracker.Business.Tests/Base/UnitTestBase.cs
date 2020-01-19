@@ -45,5 +45,24 @@ namespace ExpenseTracker.Business.Tests
             Assert.True(response.Result.IsSuccessful);
             Assert.Null(response.Result.Errors);
         }
+        protected void AssertSingleErrorCase(BaseResponse response, string errorCode)
+        {
+            Assert.NotNull(response);
+            Assert.NotNull(response.Result);
+            Assert.False(response.Result.IsSuccessful);
+            Assert.Single(response.Result.Errors);
+            Assert.Equal(errorCode, response.Result.Errors[0].ErrorCode);
+        }
+        protected void AssertMultipleErrorCase(BaseResponse response, params string[] errorCodes)
+        {
+            Assert.NotNull(response);
+            Assert.NotNull(response.Result);
+            Assert.False(response.Result.IsSuccessful);
+            Assert.Equal(errorCodes.Length, response.Result.Errors.Count);
+            foreach (string errorCode in errorCodes)
+            {
+                Assert.Contains(response.Result.Errors, q => q.ErrorCode == errorCode);
+            }
+        }
     }
 }

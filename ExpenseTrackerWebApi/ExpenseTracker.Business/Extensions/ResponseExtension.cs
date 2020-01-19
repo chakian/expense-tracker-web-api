@@ -24,6 +24,14 @@ namespace ExpenseTracker.Business.Extensions
             });
         }
 
+        public static void AppendErrors(this BaseResponse response, List<BaseResponse.OperationResult.Error> errors)
+        {
+            if (response.Result == null) response.Result = new BaseResponse.OperationResult();
+            if (response.Result.Errors == null) response.Result.Errors = new List<BaseResponse.OperationResult.Error>();
+
+            response.Result.Errors.AddRange(errors);
+        }
+
         public static void SetOkResult(this BaseResponse response)
         {
             response.Result = new BaseResponse.OperationResult();

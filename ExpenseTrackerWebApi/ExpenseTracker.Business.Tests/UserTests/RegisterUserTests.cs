@@ -22,8 +22,8 @@ namespace ExpenseTracker.Business.Tests.UserTests
         public void RegisterUser_Success()
         {
             // Arrange
-            IUserBusiness userBusiness = new UserBusiness(DbContext, GetLogger<UserBusiness>(), jwtOptions, userInternalTokenBusiness);
-            RegisterUserRequest registerUserRequest = new RegisterUserRequest()
+            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            CreateUserRequest registerUserRequest = new CreateUserRequest()
             {
                 Email = "test@test.com",
                 Name = "test",
@@ -61,8 +61,8 @@ namespace ExpenseTracker.Business.Tests.UserTests
             });
             DbContext.SaveChanges();
 
-            IUserBusiness userBusiness = new UserBusiness(DbContext, GetLogger<UserBusiness>(), jwtOptions, userInternalTokenBusiness);
-            RegisterUserRequest registerUserRequest = new RegisterUserRequest()
+            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            CreateUserRequest registerUserRequest = new CreateUserRequest()
             {
                 Email = "test@test.com",
                 Name = "test",
@@ -76,11 +76,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             var actual = userBusiness.RegisterUser(registerUserRequest).Result;
 
             // Assert
-            Assert.NotNull(actual);
-            Assert.NotNull(actual.Result);
-            Assert.False(actual.Result.IsSuccessful);
-            Assert.Single(actual.Result.Errors);
-            Assert.Equal(ErrorCodes.REGISTER_EMAIL_EXISTS, actual.Result.Errors[0].ErrorCode);
+            AssertSingleErrorCase(actual, ErrorCodes.REGISTER_EMAIL_EXISTS);
             Assert.Null(actual.Token);
         }
 
@@ -88,8 +84,8 @@ namespace ExpenseTracker.Business.Tests.UserTests
         public void RegisterUser_Fail_EmailEmpty()
         {
             // Arrange
-            IUserBusiness userBusiness = new UserBusiness(DbContext, GetLogger<UserBusiness>(), jwtOptions, userInternalTokenBusiness);
-            RegisterUserRequest registerUserRequest = new RegisterUserRequest()
+            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            CreateUserRequest registerUserRequest = new CreateUserRequest()
             {
                 Email = "   ",
                 Name = "test",
@@ -103,11 +99,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             var actual = userBusiness.RegisterUser(registerUserRequest).Result;
 
             // Assert
-            Assert.NotNull(actual);
-            Assert.NotNull(actual.Result);
-            Assert.False(actual.Result.IsSuccessful);
-            Assert.Single(actual.Result.Errors);
-            Assert.Equal(ErrorCodes.REGISTER_EMAIL_EMPTY, actual.Result.Errors[0].ErrorCode);
+            AssertSingleErrorCase(actual, ErrorCodes.REGISTER_EMAIL_EMPTY);
             Assert.Null(actual.Token);
         }
 
@@ -115,8 +107,8 @@ namespace ExpenseTracker.Business.Tests.UserTests
         public void RegisterUser_Fail_EmailEmpty_AND_NameEmpty()
         {
             // Arrange
-            IUserBusiness userBusiness = new UserBusiness(DbContext, GetLogger<UserBusiness>(), jwtOptions, userInternalTokenBusiness);
-            RegisterUserRequest registerUserRequest = new RegisterUserRequest()
+            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            CreateUserRequest registerUserRequest = new CreateUserRequest()
             {
                 Email = "   ",
                 Name = " ",
@@ -130,12 +122,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             var actual = userBusiness.RegisterUser(registerUserRequest).Result;
 
             // Assert
-            Assert.NotNull(actual);
-            Assert.NotNull(actual.Result);
-            Assert.False(actual.Result.IsSuccessful);
-            Assert.Equal(2, actual.Result.Errors.Count);
-            Assert.Contains(actual.Result.Errors, q => q.ErrorCode == ErrorCodes.REGISTER_EMAIL_EMPTY);
-            Assert.Contains(actual.Result.Errors, q => q.ErrorCode == ErrorCodes.REGISTER_NAME_EMPTY);
+            AssertMultipleErrorCase(actual, ErrorCodes.REGISTER_EMAIL_EMPTY, ErrorCodes.REGISTER_NAME_EMPTY);
             Assert.Null(actual.Token);
         }
 
@@ -143,8 +130,8 @@ namespace ExpenseTracker.Business.Tests.UserTests
         public void RegisterUser_Fail_PasswordEmpty()
         {
             // Arrange
-            IUserBusiness userBusiness = new UserBusiness(DbContext, GetLogger<UserBusiness>(), jwtOptions, userInternalTokenBusiness);
-            RegisterUserRequest registerUserRequest = new RegisterUserRequest()
+            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            CreateUserRequest registerUserRequest = new CreateUserRequest()
             {
                 Email = "test@test.com",
                 Name = "test",
@@ -158,12 +145,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             var actual = userBusiness.RegisterUser(registerUserRequest).Result;
 
             // Assert
-            Assert.NotNull(actual);
-            Assert.NotNull(actual.Result);
-            Assert.False(actual.Result.IsSuccessful);
-            Assert.Equal(2, actual.Result.Errors.Count);
-            Assert.Contains(actual.Result.Errors, q => q.ErrorCode == ErrorCodes.REGISTER_PASSWORD_EMPTY);
-            Assert.Contains(actual.Result.Errors, q => q.ErrorCode == ErrorCodes.REGISTER_PASSWORD_NOT_SAFE);
+            AssertMultipleErrorCase(actual, ErrorCodes.REGISTER_PASSWORD_EMPTY, ErrorCodes.REGISTER_PASSWORD_NOT_SAFE);
             Assert.Null(actual.Token);
         }
 
@@ -171,8 +153,8 @@ namespace ExpenseTracker.Business.Tests.UserTests
         public void RegisterUser_Fail_PasswordNotEqual()
         {
             // Arrange
-            IUserBusiness userBusiness = new UserBusiness(DbContext, GetLogger<UserBusiness>(), jwtOptions, userInternalTokenBusiness);
-            RegisterUserRequest registerUserRequest = new RegisterUserRequest()
+            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            CreateUserRequest registerUserRequest = new CreateUserRequest()
             {
                 Email = "test@test.com",
                 Name = "test",
@@ -186,11 +168,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             var actual = userBusiness.RegisterUser(registerUserRequest).Result;
 
             // Assert
-            Assert.NotNull(actual);
-            Assert.NotNull(actual.Result);
-            Assert.False(actual.Result.IsSuccessful);
-            Assert.Single(actual.Result.Errors);
-            Assert.Equal(ErrorCodes.REGISTER_PASSWORD_NOT_EQUAL, actual.Result.Errors[0].ErrorCode);
+            AssertSingleErrorCase(actual, ErrorCodes.REGISTER_PASSWORD_NOT_EQUAL);
             Assert.Null(actual.Token);
         }
 
@@ -198,8 +176,8 @@ namespace ExpenseTracker.Business.Tests.UserTests
         public void RegisterUser_Fail_PasswordNotSafe()
         {
             // Arrange
-            IUserBusiness userBusiness = new UserBusiness(DbContext, GetLogger<UserBusiness>(), jwtOptions, userInternalTokenBusiness);
-            RegisterUserRequest registerUserRequest = new RegisterUserRequest()
+            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            CreateUserRequest registerUserRequest = new CreateUserRequest()
             {
                 Email = "test@test.com",
                 Name = "test",
@@ -213,11 +191,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             var actual = userBusiness.RegisterUser(registerUserRequest).Result;
 
             // Assert
-            Assert.NotNull(actual);
-            Assert.NotNull(actual.Result);
-            Assert.False(actual.Result.IsSuccessful);
-            Assert.Single(actual.Result.Errors);
-            Assert.Equal(ErrorCodes.REGISTER_PASSWORD_NOT_SAFE, actual.Result.Errors[0].ErrorCode);
+            AssertSingleErrorCase(actual, ErrorCodes.REGISTER_PASSWORD_NOT_SAFE);
             Assert.Null(actual.Token);
         }
     }

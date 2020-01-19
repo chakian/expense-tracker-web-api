@@ -1,6 +1,4 @@
-using ExpenseTracker.Business;
-using ExpenseTracker.Business.Bootstrap;
-using ExpenseTracker.Business.Interfaces;
+using ExpenseTracker.UOW.Bootstrap;
 using ExpenseTracker.Web.Api.Bootstrap;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -34,7 +32,7 @@ namespace ExpenseTracker.Web.Api
                 options.AssumeDefaultVersionWhenUnspecified = true;
             });
 
-            services.AddExpenseTrackerDbContext(Configuration.GetConnectionString("ExpenseTrackerConnectionString"));
+            services.ConfigureDbContext(Configuration.GetConnectionString("ExpenseTrackerConnectionString"));
 
             services.AddAuthentication(o =>
             {
@@ -44,12 +42,11 @@ namespace ExpenseTracker.Web.Api
             })
                 .AddCustomJwtBearer(services, Configuration);
 
-            // configure DI for db context
-            services.AddScopedExpenseTrackerDbContext();
-
             // configure DI for business implementations
-            services.AddScoped<IUserBusiness, UserBusiness>();
-            services.AddScoped<IUserInternalTokenBusiness, UserInternalTokenBusiness>();
+            services.AddBusinessImplementationsToScope();
+
+            // configure DI for unit of work classes
+            services.AddUnitOfWorkImplementationsToScope();
 
             services.AddSwagger();
         }

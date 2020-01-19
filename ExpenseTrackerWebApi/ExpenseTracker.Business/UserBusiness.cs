@@ -25,7 +25,7 @@ namespace ExpenseTracker.Business
         private readonly IUserInternalTokenBusiness userInternalTokenBusiness;
         private readonly JwtOptions appSettings;
 
-        public UserBusiness(ExpenseTrackerContext dbContext, ILogger<UserBusiness> logger, IOptions<JwtOptions> appSettings, IUserInternalTokenBusiness userInternalTokenBusiness)
+        public UserBusiness(ILogger<UserBusiness> logger, ExpenseTrackerContext dbContext, IOptions<JwtOptions> appSettings, IUserInternalTokenBusiness userInternalTokenBusiness)
             : base(logger)
         {
             this.dbContext = dbContext;
@@ -33,7 +33,7 @@ namespace ExpenseTracker.Business
             this.userInternalTokenBusiness = userInternalTokenBusiness;
         }
 
-        private async Task<string> GenerateToken(AuthenticateUserResponse user, string requestIp)
+        public async Task<string> GenerateToken(string userId, string requestIp)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
@@ -41,7 +41,7 @@ namespace ExpenseTracker.Business
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                    new Claim(ClaimTypes.Name, userId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(60),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
@@ -52,7 +52,7 @@ namespace ExpenseTracker.Business
 
             string tokenString = tokenHandler.WriteToken(token);
 
-            await userInternalTokenBusiness.WriteToken(tokenString, user.Id, token.Issuer, requestIp, DateTime.UtcNow, token.ValidTo);
+            await userInternalTokenBusiness.WriteToken(tokenString, userId, token.Issuer, requestIp, DateTime.UtcNow, token.ValidTo);
 
             return tokenString;
         }
@@ -61,15 +61,6 @@ namespace ExpenseTracker.Business
         {
             var user = dbContext.Users.SingleOrDefaultAsync(q => q.Email == email).Result;
             return user;
-        }
-        private void SetAuthenticateUserResponseProps(AuthenticateUserResponse response, User user, string requestIp)
-        {
-            response.Id = user.Id;
-            response.Name = user.UserName;
-            response.Culture = "";//TODO: Culture
-
-            string token = GenerateToken(response, requestIp).Result;
-            response.Token = token;
         }
 
         public async Task<AuthenticateUserResponse> AuthenticateUser(AuthenticateUserRequest request)
@@ -91,7 +82,9 @@ namespace ExpenseTracker.Business
             }
             else
             {
-                SetAuthenticateUserResponseProps(response, user, request.RequestIp);
+                response.Id = user.Id;
+                response.Name = user.UserName;
+                response.Culture = "";//TODO: Culture
 
                 response.SetOkResult();
             }
@@ -99,11 +92,10 @@ namespace ExpenseTracker.Business
             return response;
         }
 
-        public async Task<RegisterUserResponse> RegisterUser(RegisterUserRequest request)
+        public async Task<CreateUserResponse> CreateUser(CreateUserRequest request)
         {
-            RegisterUserResponse response = new RegisterUserResponse();
+            CreateUserResponse response = new CreateUserResponse();
 
-            //TODO: Validations
             if (string.IsNullOrWhiteSpace(request.Email))
             {
                 response.AddError(ErrorCodes.REGISTER_EMAIL_EMPTY);
@@ -147,6 +139,11 @@ namespace ExpenseTracker.Business
                 };
                 dbContext.Users.Add(newUser);
                 await dbContext.SaveChangesAsync();
+
+                response.Id = newUser.Id;
+                response.Name = newUser.UserName;
+                // TODO: Add field
+                //response.Culture = newUser.Culture;
 
                 var user = GetUserByEmail(request.Email);
                 SetAuthenticateUserResponseProps(response, user, request.RequestIp);
