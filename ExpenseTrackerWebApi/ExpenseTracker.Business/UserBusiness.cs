@@ -1,7 +1,6 @@
 ﻿using ExpenseTracker.Business.Base;
 using ExpenseTracker.Business.Extensions;
 using ExpenseTracker.Business.Interfaces;
-using ExpenseTracker.Business.Options;
 using ExpenseTracker.Common.Constants;
 using ExpenseTracker.Common.Utils;
 using ExpenseTracker.Models.UserModels;
@@ -9,12 +8,7 @@ using ExpenseTracker.Persistence.Context;
 using ExpenseTracker.Persistence.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ExpenseTracker.Business
@@ -22,39 +16,11 @@ namespace ExpenseTracker.Business
     public class UserBusiness : BusinessBase<UserBusiness>, IUserBusiness
     {
         private readonly ExpenseTrackerContext dbContext;
-        private readonly IUserInternalTokenBusiness userInternalTokenBusiness;
-        private readonly JwtOptions appSettings;
 
-        public UserBusiness(ILogger<UserBusiness> logger, ExpenseTrackerContext dbContext, IOptions<JwtOptions> appSettings, IUserInternalTokenBusiness userInternalTokenBusiness)
+        public UserBusiness(ILogger<UserBusiness> logger, ExpenseTrackerContext dbContext)
             : base(logger)
         {
             this.dbContext = dbContext;
-            this.appSettings = appSettings.Value;
-            this.userInternalTokenBusiness = userInternalTokenBusiness;
-        }
-
-        public async Task<string> GenerateToken(string userId, string requestIp)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, userId.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(60),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-                Issuer = "https://expense.cagdaskorkut.com/api",
-                IssuedAt = DateTime.UtcNow
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            string tokenString = tokenHandler.WriteToken(token);
-
-            await userInternalTokenBusiness.WriteToken(tokenString, userId, token.Issuer, requestIp, DateTime.UtcNow, token.ValidTo);
-
-            return tokenString;
         }
 
         private User GetUserByEmail(string email)
@@ -145,8 +111,6 @@ namespace ExpenseTracker.Business
                 // TODO: Add field
                 //response.Culture = newUser.Culture;
 
-                var user = GetUserByEmail(request.Email);
-                SetAuthenticateUserResponseProps(response, user, request.RequestIp);
                 response.SetOkResult();
             }
 

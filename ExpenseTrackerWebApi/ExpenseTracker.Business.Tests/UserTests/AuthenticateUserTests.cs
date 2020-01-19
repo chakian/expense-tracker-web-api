@@ -10,12 +10,13 @@ namespace ExpenseTracker.Business.Tests.UserTests
 {
     public class AuthenticateUserTests : UnitTestBase
     {
-        readonly IOptions<Options.JwtOptions> jwtOptions;
-        readonly IUserInternalTokenBusiness userInternalTokenBusiness;
         public AuthenticateUserTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
-            jwtOptions = Microsoft.Extensions.Options.Options.Create(new Options.JwtOptions() { Secret = "test123456test123456test123456" });
-            userInternalTokenBusiness = new UserInternalTokenBusiness(DbContext, GetLogger<UserInternalTokenBusiness>());
+        }
+
+        private UserBusiness GetUserBusiness()
+        {
+            return new UserBusiness(GetLogger<UserBusiness>(), DbContext);
         }
 
         [Fact]
@@ -31,7 +32,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             DbContext.SaveChanges();
             var expectedUserId = DbContext.Users.Single().Id;
 
-            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            IUserBusiness userBusiness = GetUserBusiness();
             AuthenticateUserRequest authenticateUserRequest = new AuthenticateUserRequest()
             {
                 Email = "test@test.com",
@@ -55,8 +56,6 @@ namespace ExpenseTracker.Business.Tests.UserTests
 
             Assert.Equal(expected.Id, actual.Id);
             Assert.Equal(expected.Name, actual.Name);
-            Assert.NotNull(actual.Token);
-            Assert.NotEmpty(actual.Token);
             Assert.Equal(expected.Culture, actual.Culture);
         }
 
@@ -64,7 +63,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         public void AuthenticateUser_Fail_WrongEmail()
         {
             // Arrange
-            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            IUserBusiness userBusiness = GetUserBusiness();
             AuthenticateUserRequest authenticateUserRequest = new AuthenticateUserRequest()
             {
                 Email = "test@test.com",
@@ -94,7 +93,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             DbContext.SaveChanges();
             var expectedUserId = DbContext.Users.Single().Id;
 
-            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            IUserBusiness userBusiness = GetUserBusiness();
             AuthenticateUserRequest authenticateUserRequest = new AuthenticateUserRequest()
             {
                 Email = "test@test.com",

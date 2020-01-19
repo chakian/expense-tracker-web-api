@@ -27,7 +27,7 @@ namespace ExpenseTracker.Web.Api.Bootstrap
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = true,
-                    ValidIssuer = "https://expense.cagdaskorkut.com/api",
+                    ValidIssuer = jwtOptions.Issuer,
                     ValidateAudience = false,
                     ValidAudiences = new List<string>() { "api://web", "api://mobile" },
                     //RequireExpirationTime = false,

@@ -1,8 +1,6 @@
 ﻿using ExpenseTracker.Business.Interfaces;
 using ExpenseTracker.Common.Constants;
 using ExpenseTracker.Models.UserModels;
-using Microsoft.Extensions.Options;
-using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -10,19 +8,20 @@ namespace ExpenseTracker.Business.Tests.UserTests
 {
     public class RegisterUserTests : UnitTestBase
     {
-        readonly IOptions<Options.JwtOptions> jwtOptions;
-        readonly IUserInternalTokenBusiness userInternalTokenBusiness;
         public RegisterUserTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
-            jwtOptions = Microsoft.Extensions.Options.Options.Create(new Options.JwtOptions() { Secret = "test123456test123456test123456" });
-            userInternalTokenBusiness = new UserInternalTokenBusiness(DbContext, GetLogger<UserInternalTokenBusiness>());
+        }
+
+        private UserBusiness GetUserBusiness()
+        {
+            return new UserBusiness(GetLogger<UserBusiness>(), DbContext);
         }
 
         [Fact]
         public void RegisterUser_Success()
         {
             // Arrange
-            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            IUserBusiness userBusiness = GetUserBusiness();
             CreateUserRequest registerUserRequest = new CreateUserRequest()
             {
                 Email = "test@test.com",
@@ -35,17 +34,15 @@ namespace ExpenseTracker.Business.Tests.UserTests
             var expected = new AuthenticateUserResponse()
             {
                 Name = "test",
-                Culture = ""
+                Culture = null
             };
 
             // Act
-            var actual = userBusiness.RegisterUser(registerUserRequest).Result;
+            var actual = userBusiness.CreateUser(registerUserRequest).Result;
 
             // Assert
             AssertSuccessCase(actual);
             Assert.Equal(expected.Name, actual.Name);
-            Assert.NotNull(actual.Token);
-            Assert.NotEmpty(actual.Token);
             Assert.Equal(expected.Culture, actual.Culture);
         }
 
@@ -61,7 +58,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             });
             DbContext.SaveChanges();
 
-            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            IUserBusiness userBusiness = GetUserBusiness();
             CreateUserRequest registerUserRequest = new CreateUserRequest()
             {
                 Email = "test@test.com",
@@ -73,7 +70,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             };
 
             // Act
-            var actual = userBusiness.RegisterUser(registerUserRequest).Result;
+            var actual = userBusiness.CreateUser(registerUserRequest).Result;
 
             // Assert
             AssertSingleErrorCase(actual, ErrorCodes.REGISTER_EMAIL_EXISTS);
@@ -84,7 +81,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         public void RegisterUser_Fail_EmailEmpty()
         {
             // Arrange
-            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            IUserBusiness userBusiness = GetUserBusiness();
             CreateUserRequest registerUserRequest = new CreateUserRequest()
             {
                 Email = "   ",
@@ -96,7 +93,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             };
 
             // Act
-            var actual = userBusiness.RegisterUser(registerUserRequest).Result;
+            var actual = userBusiness.CreateUser(registerUserRequest).Result;
 
             // Assert
             AssertSingleErrorCase(actual, ErrorCodes.REGISTER_EMAIL_EMPTY);
@@ -107,7 +104,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         public void RegisterUser_Fail_EmailEmpty_AND_NameEmpty()
         {
             // Arrange
-            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            IUserBusiness userBusiness = GetUserBusiness();
             CreateUserRequest registerUserRequest = new CreateUserRequest()
             {
                 Email = "   ",
@@ -119,7 +116,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             };
 
             // Act
-            var actual = userBusiness.RegisterUser(registerUserRequest).Result;
+            var actual = userBusiness.CreateUser(registerUserRequest).Result;
 
             // Assert
             AssertMultipleErrorCase(actual, ErrorCodes.REGISTER_EMAIL_EMPTY, ErrorCodes.REGISTER_NAME_EMPTY);
@@ -130,7 +127,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         public void RegisterUser_Fail_PasswordEmpty()
         {
             // Arrange
-            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            IUserBusiness userBusiness = GetUserBusiness();
             CreateUserRequest registerUserRequest = new CreateUserRequest()
             {
                 Email = "test@test.com",
@@ -142,7 +139,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             };
 
             // Act
-            var actual = userBusiness.RegisterUser(registerUserRequest).Result;
+            var actual = userBusiness.CreateUser(registerUserRequest).Result;
 
             // Assert
             AssertMultipleErrorCase(actual, ErrorCodes.REGISTER_PASSWORD_EMPTY, ErrorCodes.REGISTER_PASSWORD_NOT_SAFE);
@@ -153,7 +150,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         public void RegisterUser_Fail_PasswordNotEqual()
         {
             // Arrange
-            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            IUserBusiness userBusiness = GetUserBusiness();
             CreateUserRequest registerUserRequest = new CreateUserRequest()
             {
                 Email = "test@test.com",
@@ -165,7 +162,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             };
 
             // Act
-            var actual = userBusiness.RegisterUser(registerUserRequest).Result;
+            var actual = userBusiness.CreateUser(registerUserRequest).Result;
 
             // Assert
             AssertSingleErrorCase(actual, ErrorCodes.REGISTER_PASSWORD_NOT_EQUAL);
@@ -176,7 +173,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         public void RegisterUser_Fail_PasswordNotSafe()
         {
             // Arrange
-            IUserBusiness userBusiness = new UserBusiness(GetLogger<UserBusiness>(), DbContext, jwtOptions, userInternalTokenBusiness);
+            IUserBusiness userBusiness = GetUserBusiness();
             CreateUserRequest registerUserRequest = new CreateUserRequest()
             {
                 Email = "test@test.com",
@@ -188,7 +185,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             };
 
             // Act
-            var actual = userBusiness.RegisterUser(registerUserRequest).Result;
+            var actual = userBusiness.CreateUser(registerUserRequest).Result;
 
             // Assert
             AssertSingleErrorCase(actual, ErrorCodes.REGISTER_PASSWORD_NOT_SAFE);

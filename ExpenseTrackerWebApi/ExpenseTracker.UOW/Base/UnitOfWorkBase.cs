@@ -24,7 +24,7 @@ namespace ExpenseTracker.UOW.Base
             try
             {
                 dbContext.Database.BeginTransaction();
-                var response = ExecuteInternal<IBaseRequest, IBaseResponse>(request);
+                var response = ExecuteInternal(request);
                 //TODO: Change this to true
                 if (response.IsSuccessful == false)
                 {
@@ -55,8 +55,6 @@ namespace ExpenseTracker.UOW.Base
             }
         }
 
-        internal abstract V ExecuteInternal<U, V>(U request)
-            where U : IBaseRequest
-            where V : IBaseResponse;
+        internal abstract IBaseResponse ExecuteInternal(IBaseRequest request);
     }
 }

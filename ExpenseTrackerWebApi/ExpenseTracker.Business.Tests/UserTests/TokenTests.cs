@@ -9,8 +9,16 @@ namespace ExpenseTracker.Business.Tests.UserTests
 {
     public class TokenTests : UnitTestBase
     {
+        readonly IOptions<Options.JwtOptions> jwtOptions;
+
         public TokenTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
+            jwtOptions = Microsoft.Extensions.Options.Options.Create(new Options.JwtOptions() { Secret = "test123456test123456test123456" });
+        }
+
+        private UserInternalTokenBusiness getUserInternalTokenBusiness()
+        {
+            return new UserInternalTokenBusiness(DbContext, GetLogger<UserInternalTokenBusiness>(), jwtOptions);
         }
 
         [Fact]
@@ -30,7 +38,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             });
             DbContext.SaveChanges();
 
-            IUserInternalTokenBusiness userInternalTokenBusiness = new UserInternalTokenBusiness(DbContext, GetLogger<UserInternalTokenBusiness>());
+            IUserInternalTokenBusiness userInternalTokenBusiness = getUserInternalTokenBusiness();
             
             AuthenticateUserRequest authenticateUserRequest = new AuthenticateUserRequest()
             {
@@ -61,7 +69,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             });
             DbContext.SaveChanges();
 
-            IUserInternalTokenBusiness userInternalTokenBusiness = new UserInternalTokenBusiness(DbContext, GetLogger<UserInternalTokenBusiness>());
+            IUserInternalTokenBusiness userInternalTokenBusiness = getUserInternalTokenBusiness();
 
             AuthenticateUserRequest authenticateUserRequest = new AuthenticateUserRequest()
             {

@@ -2,5 +2,6 @@
 {
     public interface IBaseRequest
     {
+        string RequestIp { get; set; }
     }
 }
