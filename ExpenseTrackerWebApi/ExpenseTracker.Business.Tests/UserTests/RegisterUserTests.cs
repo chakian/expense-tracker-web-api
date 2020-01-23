@@ -18,7 +18,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         }
 
         [Fact]
-        public void RegisterUser_Success()
+        public void RegisterUserSuccess()
         {
             // Arrange
             IUserBusiness userBusiness = GetUserBusiness();
@@ -47,7 +47,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         }
 
         [Fact]
-        public void RegisterUser_Fail_EmailExists()
+        public void RegisterUserFailEmailExists()
         {
             // Arrange
             DbContext.Users.Add(new Persistence.Identity.User()
@@ -78,7 +78,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         }
 
         [Fact]
-        public void RegisterUser_Fail_EmailEmpty()
+        public void RegisterUserFailEmailEmpty()
         {
             // Arrange
             IUserBusiness userBusiness = GetUserBusiness();
@@ -101,7 +101,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         }
 
         [Fact]
-        public void RegisterUser_Fail_EmailEmpty_AND_NameEmpty()
+        public void RegisterUserFailEmailEmptyANDNameEmpty()
         {
             // Arrange
             IUserBusiness userBusiness = GetUserBusiness();
@@ -124,7 +124,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         }
 
         [Fact]
-        public void RegisterUser_Fail_PasswordEmpty()
+        public void RegisterUserFailPasswordEmpty()
         {
             // Arrange
             IUserBusiness userBusiness = GetUserBusiness();
@@ -147,7 +147,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         }
 
         [Fact]
-        public void RegisterUser_Fail_PasswordNotEqual()
+        public void RegisterUserFailPasswordNotEqual()
         {
             // Arrange
             IUserBusiness userBusiness = GetUserBusiness();
@@ -170,7 +170,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         }
 
         [Fact]
-        public void RegisterUser_Fail_PasswordNotSafe()
+        public void RegisterUserFailPasswordNotSafe()
         {
             // Arrange
             IUserBusiness userBusiness = GetUserBusiness();

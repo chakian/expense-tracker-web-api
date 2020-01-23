@@ -1,7 +1,6 @@
 ﻿using ExpenseTracker.Business.Interfaces;
 using ExpenseTracker.Common.Constants;
 using ExpenseTracker.Models.UserModels;
-using Microsoft.Extensions.Options;
 using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
@@ -20,7 +19,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         }
 
         [Fact]
-        public void AuthenticateUser_Success()
+        public void AuthenticateUserSuccess()
         {
             // Arrange
             DbContext.Users.Add(new Persistence.Identity.User()
@@ -60,7 +59,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         }
 
         [Fact]
-        public void AuthenticateUser_Fail_WrongEmail()
+        public void AuthenticateUserFailWrongEmail()
         {
             // Arrange
             IUserBusiness userBusiness = GetUserBusiness();
@@ -81,7 +80,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
         }
 
         [Fact]
-        public void AuthenticateUser_Fail_WrongPassword()
+        public void AuthenticateUserFailWrongPassword()
         {
             // Arrange
             DbContext.Users.Add(new Persistence.Identity.User()
