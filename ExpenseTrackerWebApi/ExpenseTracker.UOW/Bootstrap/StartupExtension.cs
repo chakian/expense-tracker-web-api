@@ -15,6 +15,7 @@ namespace ExpenseTracker.UOW.Bootstrap
         {
             services.AddDbContext<ExpenseTrackerContext>(options => options.UseSqlServer(connectionString));
             services.AddScoped<IDbContext, ExpenseTrackerContext>();
+            services.AddScoped<ExpenseTrackerContext>();
         }
 
         public static void AddBusinessImplementationsToScope(this IServiceCollection services)

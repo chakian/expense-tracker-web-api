@@ -11,13 +11,13 @@ using System;
 
 namespace ExpenseTracker.UOW.UserWorks
 {
-    public class CreateUserAndReturnTokenUOW : UnitOfWorkBase<CreateUserAndReturnTokenUOW>
+    public class AuthenticateUserAndReturnTokenUOW : UnitOfWorkBase<AuthenticateUserAndReturnTokenUOW>
     {
         private readonly IUserBusiness userBusiness;
         private readonly IUserInternalTokenBusiness userInternalTokenBusiness;
         IOptions<JwtOptions> appSettings;
 
-        public CreateUserAndReturnTokenUOW(ILogger<CreateUserAndReturnTokenUOW> logger, IDbContext dbContext, IUserBusiness userBusiness, IUserInternalTokenBusiness userInternalTokenBusiness, IOptions<JwtOptions> appSettings)
+        public AuthenticateUserAndReturnTokenUOW(ILogger<AuthenticateUserAndReturnTokenUOW> logger, IDbContext dbContext, IUserBusiness userBusiness, IUserInternalTokenBusiness userInternalTokenBusiness, IOptions<JwtOptions> appSettings)
             : base(logger, dbContext)
         {
             this.userBusiness = userBusiness;
@@ -27,9 +27,9 @@ namespace ExpenseTracker.UOW.UserWorks
 
         internal override IBaseResponse ExecuteInternal(IBaseRequest request)
         {
-            CreateUserRequest createUserRequest = (CreateUserRequest)request;
+            AuthenticateUserRequest authenticateUserRequest = (AuthenticateUserRequest)request;
+            AuthenticateUserResponse response = userBusiness.AuthenticateUser(authenticateUserRequest).Result;
 
-            CreateUserResponse response = userBusiness.CreateUser(createUserRequest).Result;
             if (response.IsSuccessful)
             {
                 string token = userInternalTokenBusiness.GenerateToken(response.Id, request.RequestIp, appSettings.Value);

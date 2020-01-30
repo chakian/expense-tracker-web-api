@@ -10,37 +10,31 @@ namespace ExpenseTracker.Web.Api.Controllers
     [Route("api/user")]
     public class UserController : ExpenseTrackerControllerBase<UserController>
     {
-        private readonly CreateUserAndReturnTokenUOW createUserAndReturnTokenUOW;
+        private readonly CreateUserAndReturnTokenUOW createUserAndReturnToken;
+        private readonly AuthenticateUserAndReturnTokenUOW authenticateUserAndReturnToken;
 
-        public UserController(ILogger<UserController> logger, CreateUserAndReturnTokenUOW createUserAndReturnTokenUOW)
+        public UserController(ILogger<UserController> logger, 
+            CreateUserAndReturnTokenUOW createUserAndReturnToken,
+            AuthenticateUserAndReturnTokenUOW authenticateUserAndReturnToken)
             : base(logger)
         {
-            this.createUserAndReturnTokenUOW = createUserAndReturnTokenUOW;
+            this.createUserAndReturnToken = createUserAndReturnToken;
+            this.authenticateUserAndReturnToken = authenticateUserAndReturnToken;
         }
 
-        //[HttpPost]
-        //[Route("authenticate")]
-        //public async Task<ActionResult> Authenticate(AuthenticateUserRequest model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        [HttpPost]
+        [Route("authenticate")]
+        public ActionResult Authenticate(AuthenticateUserRequest model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        //    var authenticationResponse = await userBusiness.AuthenticateUser(model);
+            var response = authenticateUserAndReturnToken.Execute(model);
 
-        //    if (authenticationResponse == null)
-        //        return StatusCode(500);
-
-        //    if (authenticationResponse.Result.IsSuccessful)
-        //    {
-        //        return Ok(authenticationResponse);
-        //    }
-        //    else
-        //    {
-        //        return StatusCode(400, authenticationResponse.Result);
-        //    }
-        //}
+            return GetActionResult(response);
+        }
 
         [HttpPost]
         [Route("register")]
@@ -55,19 +49,9 @@ namespace ExpenseTracker.Web.Api.Controllers
                 return BadRequest("Passwords do not match");
             }
 
-            var response = createUserAndReturnTokenUOW.Execute(model);
+            var response = createUserAndReturnToken.Execute(model);
 
-            if (response == null)
-                return StatusCode(500);
-
-            if (response.IsSuccessful)
-            {
-                return Ok(response);
-            }
-            else
-            {
-                return BadRequest(response);
-            }
+            return GetActionResult(response);
         }
     }
 }

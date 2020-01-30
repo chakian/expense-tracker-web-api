@@ -8,6 +8,7 @@ namespace ExpenseTracker.Web.Api.Bootstrap
         public static void AddUnitOfWorkImplementationsToScope(this IServiceCollection services)
         {
             services.AddScoped<CreateUserAndReturnTokenUOW>();
+            services.AddScoped<AuthenticateUserAndReturnTokenUOW>();
         }
     }
 }

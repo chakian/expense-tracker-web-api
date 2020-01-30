@@ -42,7 +42,7 @@ namespace ExpenseTracker.Business.Tests
         {
             Assert.NotNull(response);
             Assert.NotNull(response.Result);
-            Assert.True(response.Result.IsSuccessful);
+            Assert.True(response.Result.IsSuccessful, "Expected the result to be successful but it is not!");
             Assert.Null(response.Result.Errors);
         }
         protected void AssertSingleErrorCase(BaseResponse response, string errorCode)

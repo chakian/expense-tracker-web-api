@@ -1,4 +1,5 @@
-﻿using ExpenseTracker.Language;
+﻿using ExpenseTracker.Common.Constants;
+using ExpenseTracker.Language;
 using ExpenseTracker.Models.Base;
 using System.Collections.Generic;
 
@@ -38,6 +39,11 @@ namespace ExpenseTracker.Business.Extensions
             if (response.Result.Errors == null) response.Result.Errors = new List<BaseResponse.OperationResult.Error>();
 
             response.Result.Errors.Add(error);
+        }
+
+        public static void AppendGenericError(this BaseResponse response)
+        {
+            response.AppendError(new BaseResponse.OperationResult.Error() { ErrorCode = ErrorCodes.GENERIC_ERROR });
         }
 
         public static void SetOkResult(this BaseResponse response)

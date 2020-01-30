@@ -23,10 +23,11 @@ namespace ExpenseTracker.UOW.Base
         {
             try
             {
+                // TODO: Transaction mechanism isn't working! Fix this!
                 dbContext.Database.BeginTransaction();
                 var response = ExecuteInternal(request);
                 //TODO: Change this to true
-                if (response.IsSuccessful == false)
+                if (response.IsSuccessful)
                 {
                     dbContext.Database.CommitTransaction();
                 }
@@ -39,6 +40,8 @@ namespace ExpenseTracker.UOW.Base
             catch (Exception ex)
             {
                 logger.LogCritical(ex.Message, ex.StackTrace);
+
+                dbContext.Database.RollbackTransaction();
 
                 return new BaseResponse()
                 {

@@ -100,7 +100,7 @@ namespace ExpenseTracker.Business
                     LockoutEnabled = false,
                     AccessFailedCount = 0,
                     IsActive = true,
-                    InsertTime = DateTime.Now,
+                    InsertTime = DateTime.UtcNow,
                     Email = request.Email
                 };
                 dbContext.Users.Add(newUser);

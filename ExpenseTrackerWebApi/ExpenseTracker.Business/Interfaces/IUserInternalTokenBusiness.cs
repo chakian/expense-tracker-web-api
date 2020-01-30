@@ -1,12 +1,13 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using ExpenseTracker.Business.Options;
+using ExpenseTracker.Models.Base;
 using System;
-using System.Threading.Tasks;
 
 namespace ExpenseTracker.Business.Interfaces
 {
     public interface IUserInternalTokenBusiness
     {
-        string GenerateToken(string userId, string requestIp);
-        Task WriteToken(string token, string userId, string issuer, string creatingIp, DateTime validFrom, DateTime validTo, bool isValid = true);
+        string GenerateToken(string userId, string requestIp, JwtOptions tokenOptions);
+        BaseResponse WriteToken(JwtOptions tokenOptions, string token, string userId, string creatingIp, DateTime validFrom, bool isValid = true);
+        string GetUsersActiveToken(string userId, string issuer, string creatingIp);
     }
 }
