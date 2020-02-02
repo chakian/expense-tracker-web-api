@@ -1,3 +1,0 @@
-dotnet test --logger "trx;LogFileName=TestResults.trx" --logger "xunit;LogFileName=TestResults.xml" --results-directory ./TestReports/UnitTests /p:CollectCoverage=true /p:CoverletOutput=TestReports\Coverage\ /p:CoverletOutputFormat=cobertura /p:Exclude="[xunit.*]"
-..\tools\reportgenerator.exe "-reports:TestReports\Coverage\coverage.cobertura.xml" "-targetdir:TestReports\Coverage" -reporttypes:HTML;HTMLSummary "-assemblyfilters:-Excluded ExpenseTracker.Language" "-classfilters:-Excluded ExpenseTracker.Business.Bootstrap.StartupExtension"
-start TestReports\Coverage\index.htm
