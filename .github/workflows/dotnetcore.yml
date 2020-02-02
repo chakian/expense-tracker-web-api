@@ -11,7 +11,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1.4.0
       with:
-        dotnet-version: 3.1
+        dotnet-version: 3.1.100
         
     - name: Build
       run: find . -type f \( -iname "*.sln" \) | xargs -n1 dotnet build --configuration Release
