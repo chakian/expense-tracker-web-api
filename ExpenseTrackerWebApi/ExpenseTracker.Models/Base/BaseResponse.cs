@@ -10,7 +10,7 @@ namespace ExpenseTracker.Models.Base
             Result = new OperationResult();
         }
 
-        public OperationResult Result { get; set; }
+        public IOperationResult Result { get; set; }
 
         public bool IsSuccessful
         {
@@ -20,7 +20,7 @@ namespace ExpenseTracker.Models.Base
             }
         }
 
-        public class OperationResult
+        public class OperationResult : IOperationResult
         {
             public bool IsSuccessful
             {
@@ -36,9 +36,9 @@ namespace ExpenseTracker.Models.Base
                     }
                 }
             }
-            public List<Error> Errors { get; set; }
+            public List<IError> Errors { get; set; }
 
-            public class Error
+            public class Error : IError
             {
                 public string ErrorCode { get; set; }
                 public string Message { get; set; }

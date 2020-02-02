@@ -1,4 +1,5 @@
 ﻿using ExpenseTracker.Common.Constants;
+using ExpenseTracker.Common.Interfaces.Models;
 using ExpenseTracker.Language;
 using ExpenseTracker.Models.Base;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace ExpenseTracker.Business.Extensions
         public static void AddError(this BaseResponse response, string errorCode, string message = "")
         {
             if (response.Result == null) response.Result = new BaseResponse.OperationResult();
-            if (response.Result.Errors == null) response.Result.Errors = new List<BaseResponse.OperationResult.Error>();
+            if (response.Result.Errors == null) response.Result.Errors = new List<IError>();
 
             if (string.IsNullOrEmpty(message))
             {
@@ -28,7 +29,7 @@ namespace ExpenseTracker.Business.Extensions
         public static void AppendErrors(this BaseResponse response, List<BaseResponse.OperationResult.Error> errors)
         {
             if (response.Result == null) response.Result = new BaseResponse.OperationResult();
-            if (response.Result.Errors == null) response.Result.Errors = new List<BaseResponse.OperationResult.Error>();
+            if (response.Result.Errors == null) response.Result.Errors = new List<IError>();
 
             response.Result.Errors.AddRange(errors);
         }
@@ -36,7 +37,7 @@ namespace ExpenseTracker.Business.Extensions
         public static void AppendError(this BaseResponse response, BaseResponse.OperationResult.Error error)
         {
             if (response.Result == null) response.Result = new BaseResponse.OperationResult();
-            if (response.Result.Errors == null) response.Result.Errors = new List<BaseResponse.OperationResult.Error>();
+            if (response.Result.Errors == null) response.Result.Errors = new List<IError>();
 
             response.Result.Errors.Add(error);
         }

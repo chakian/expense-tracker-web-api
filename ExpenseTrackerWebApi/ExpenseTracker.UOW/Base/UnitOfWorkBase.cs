@@ -47,7 +47,7 @@ namespace ExpenseTracker.UOW.Base
                 {
                     Result = new BaseResponse.OperationResult()
                     {
-                        Errors = new System.Collections.Generic.List<BaseResponse.OperationResult.Error>()
+                        Errors = new System.Collections.Generic.List<IError>()
                         {
                             new BaseResponse.OperationResult.Error(){
                                 ErrorCode=ErrorCodes.GENERIC_ERROR
