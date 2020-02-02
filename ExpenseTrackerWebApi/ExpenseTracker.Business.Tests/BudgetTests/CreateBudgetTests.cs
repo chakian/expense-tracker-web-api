@@ -12,6 +12,11 @@ namespace ExpenseTracker.Business.Tests.BudgetTests
         {
         }
 
+        //private BudgetBusiness GetBudgetBusiness()
+        //{
+        //    return new BudgetBusiness(GetLogger<BudgetBusiness>(), DbContext);
+        //}
+
         //[Fact]
         //public void CreateBudget_Success()
         //{
