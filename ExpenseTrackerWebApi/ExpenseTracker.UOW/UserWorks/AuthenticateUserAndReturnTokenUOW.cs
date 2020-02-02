@@ -32,14 +32,14 @@ namespace ExpenseTracker.UOW.UserWorks
 
             if (response.IsSuccessful)
             {
-                string token = userInternalTokenBusiness.GenerateToken(response.Id, request.RequestIp, appSettings.Value);
+                string token = userInternalTokenBusiness.GenerateToken(response.Id, request.RequestIp);
                 if (string.IsNullOrEmpty(token))
                 {
                     response.AppendGenericError();
                 }
                 else
                 {
-                    userInternalTokenBusiness.WriteToken(appSettings.Value, token, response.Id, request.RequestIp, DateTime.UtcNow);
+                    userInternalTokenBusiness.WriteToken(token, response.Id, request.RequestIp, DateTime.UtcNow);
                     response.Token = token;
                 }
             }

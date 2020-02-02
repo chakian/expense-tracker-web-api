@@ -29,7 +29,7 @@ namespace ExpenseTracker.Business
             this.appSettings = appSettings.Value;
         }
 
-        public string GenerateToken(string userId, string requestIp, JwtOptions tokenOptions)
+        public string GenerateToken(string userId, string requestIp)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
@@ -39,9 +39,9 @@ namespace ExpenseTracker.Business
                 {
                     new Claim(ClaimTypes.Name, userId.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddDays(tokenOptions.ValidDays),
+                Expires = DateTime.UtcNow.AddDays(appSettings.ValidDays),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-                Issuer = tokenOptions.Issuer,
+                Issuer = appSettings.Issuer,
                 IssuedAt = DateTime.UtcNow
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -74,7 +74,7 @@ namespace ExpenseTracker.Business
             return token;
         }
 
-        public BaseResponse WriteToken(JwtOptions tokenOptions, string tokenString, string userId, string creatingIp, DateTime validFrom, bool isValid = true)
+        public BaseResponse WriteToken(string tokenString, string userId, string creatingIp, DateTime validFrom, bool isValid = true)
         {
             //TODO: Learn about refresh tokens!
             BaseResponse response = new BaseResponse();
@@ -84,10 +84,10 @@ namespace ExpenseTracker.Business
             }
             else
             {
-                var token = GetActiveToken(userId, tokenOptions.Issuer, creatingIp, tokenString);
+                var token = GetActiveToken(userId, appSettings.Issuer, creatingIp, tokenString);
                 if (token == null)
                 {
-                    AddNewToken(tokenOptions, tokenString, userId, creatingIp, isValid);
+                    AddNewToken(tokenString, userId, creatingIp, isValid);
                 }
                 else if (token.Id != tokenString)
                 {
@@ -95,27 +95,27 @@ namespace ExpenseTracker.Business
                     token.ValidTo = DateTime.UtcNow;
                     dbContext.SaveChanges();
 
-                    AddNewToken(tokenOptions, tokenString, userId, creatingIp, isValid);
+                    AddNewToken(tokenString, userId, creatingIp, isValid);
                 }
                 else
                 {
                     token.LastUsedDate = DateTime.UtcNow;
-                    token.ValidTo = DateTime.UtcNow.AddDays(tokenOptions.ValidDays);
+                    token.ValidTo = DateTime.UtcNow.AddDays(appSettings.ValidDays);
                     dbContext.SaveChanges();
                 }
             }
             return response;
         }
-        private void AddNewToken(JwtOptions tokenOptions, string tokenString, string userId, string creatingIp, bool isValid)
+        private void AddNewToken(string tokenString, string userId, string creatingIp, bool isValid)
         {
-            dbContext.UserInternalTokens.Add(new Persistence.Context.DbModels.UserInternalToken()
+            dbContext.UserInternalTokens.Add(new UserInternalToken()
             {
                 Id = tokenString,
                 UserId = userId,
-                Issuer = tokenOptions.Issuer,
+                Issuer = appSettings.Issuer,
                 CreatingIp = creatingIp,
                 ValidFrom = DateTime.UtcNow,
-                ValidTo = DateTime.UtcNow.AddDays(tokenOptions.ValidDays),
+                ValidTo = DateTime.UtcNow.AddDays(appSettings.ValidDays),
                 LastUsedDate = DateTime.UtcNow,
                 IsValid = isValid
             });

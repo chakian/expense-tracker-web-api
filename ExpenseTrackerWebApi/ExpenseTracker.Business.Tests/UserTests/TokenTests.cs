@@ -47,7 +47,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             IUserInternalTokenBusiness userInternalTokenBusiness = getUserInternalTokenBusiness();
 
             // Act
-            var response = userInternalTokenBusiness.WriteToken(jwtOptions.Value, "differenttoken", "testuser", "1.1.1.1", DateTime.UtcNow);
+            var response = userInternalTokenBusiness.WriteToken("differenttoken", "testuser", "1.1.1.1", DateTime.UtcNow);
 
             var oldToken = DbContext.UserInternalTokens.Single(q => q.Id == "newToken");
 
@@ -76,7 +76,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             IUserInternalTokenBusiness userInternalTokenBusiness = getUserInternalTokenBusiness();
 
             // Act
-            var response = userInternalTokenBusiness.WriteToken(jwtOptions.Value, "", "testuser", "1.1.1.1", DateTime.UtcNow);
+            var response = userInternalTokenBusiness.WriteToken("", "testuser", "1.1.1.1", DateTime.UtcNow);
 
             var oldToken = DbContext.UserInternalTokens.Single(q => q.Id == "newToken");
 
@@ -107,7 +107,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
 
             // Act
             Thread.Sleep(1000);
-            var response = userInternalTokenBusiness.WriteToken(jwtOptions.Value, "newToken", "testuser", "1.1.1.1", DateTime.UtcNow);
+            var response = userInternalTokenBusiness.WriteToken("newToken", "testuser", "1.1.1.1", DateTime.UtcNow);
 
             var token = DbContext.UserInternalTokens.Single(q => q.Id == "newToken");
 
@@ -123,7 +123,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             IUserInternalTokenBusiness userInternalTokenBusiness = getUserInternalTokenBusiness();
 
             // Act
-            userInternalTokenBusiness.WriteToken(jwtOptions.Value, "newToken", "testuser", "1.1.1.1", DateTime.UtcNow);
+            userInternalTokenBusiness.WriteToken("newToken", "testuser", "1.1.1.1", DateTime.UtcNow);
 
             var actual = DbContext.UserInternalTokens.Single(q => q.Id == "newToken");
 
@@ -138,7 +138,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             IUserInternalTokenBusiness userInternalTokenBusiness = getUserInternalTokenBusiness();
 
             // Act
-            string token = userInternalTokenBusiness.GenerateToken("newUser", "1.1.1.1", jwtOptions.Value);
+            string token = userInternalTokenBusiness.GenerateToken("newUser", "1.1.1.1");
 
             // Assert
             Assert.False(string.IsNullOrEmpty(token), "Expected token string not to be null or empty");
