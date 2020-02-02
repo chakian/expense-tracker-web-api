@@ -1,4 +1,5 @@
-﻿using Xunit.Abstractions;
+﻿using ExpenseTracker.Models.UserModels;
+using Xunit.Abstractions;
 
 namespace ExpenseTracker.Business.Tests.Base
 {
@@ -8,9 +9,21 @@ namespace ExpenseTracker.Business.Tests.Base
         {
         }
 
-        protected string AddUser()
+        protected CreateUserResponse AddUser(string username = "testusername", string email = "test@email.com", string password = "testpassword")
         {
-            return "";
+            Persistence.Identity.User user = new Persistence.Identity.User()
+            {
+                Email = email,
+                UserName = username,
+                PasswordHash = password
+            };
+            DbContext.Users.Add(user);
+            DbContext.SaveChanges();
+            return new CreateUserResponse()
+            {
+                Id = user.Id,
+                Name = user.UserName
+            };
         }
     }
 }
