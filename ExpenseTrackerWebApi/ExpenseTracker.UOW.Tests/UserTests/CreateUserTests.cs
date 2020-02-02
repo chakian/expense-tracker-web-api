@@ -1,27 +1,32 @@
 ﻿using ExpenseTracker.UOW.UserWorks;
 using ExpenseTracker.Business.Options;
-using Xunit.Abstractions;
 using ExpenseTracker.Business;
 using Xunit;
 using ExpenseTracker.Models.UserModels;
 using Moq;
+using Microsoft.Extensions.Options;
+using ExpenseTracker.Business.Interfaces;
+using System.Threading.Tasks;
+using ExpenseTracker.Models.Base;
+using System.Collections.Generic;
+using ExpenseTracker.Common.Interfaces.Models;
+using static ExpenseTracker.Models.Base.BaseResponse.OperationResult;
 
 namespace ExpenseTracker.UOW.Tests.UserTests
 {
     public class CreateUserTests : UnitTestBase
     {
-        Mock<UserBusiness> userBusiness;
-        Mock<UserInternalTokenBusiness> userInternalTokenBusiness;
-        public CreateUserTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+        Mock<IUserBusiness> userBusiness;
+        Mock<IUserInternalTokenBusiness> userInternalTokenBusiness;
+        public CreateUserTests()
         {
-            userBusiness = new Mock<UserBusiness>();
-            userInternalTokenBusiness = new Mock<UserInternalTokenBusiness>();
+            userBusiness = new Mock<IUserBusiness>();
+            userInternalTokenBusiness = new Mock<IUserInternalTokenBusiness>();
         }
 
         private CreateUserAndReturnTokenUOW GetUOW()
         {
-            Microsoft.Extensions.Options.IOptions<JwtOptions> jwtOptions = Microsoft.Extensions.Options.Options.Create(new JwtOptions() { Secret = "test123456test123456test123456", Issuer = "issuer", ValidDays = 10 });
-            return new CreateUserAndReturnTokenUOW(GetLogger<CreateUserAndReturnTokenUOW>(), DbContext, userBusiness.Object, userInternalTokenBusiness.Object, jwtOptions);
+            return new CreateUserAndReturnTokenUOW(GetLogger<CreateUserAndReturnTokenUOW>(), GetContext(), userBusiness.Object, userInternalTokenBusiness.Object);
         }
 
         [Fact]
@@ -38,21 +43,49 @@ namespace ExpenseTracker.UOW.Tests.UserTests
                 Culture = "",
                 RequestIp = ""
             };
-            var expected = new AuthenticateUserResponse()
+            var response = new CreateUserResponse
             {
                 Name = "test",
                 Culture = null
             };
 
-            //userBusiness.Setup CreateUser
+            userBusiness.Setup(o => o.CreateUser(It.IsAny<CreateUserRequest>())).Returns(Task.FromResult(response));
+            userInternalTokenBusiness.Setup(o => o.GenerateToken(It.IsAny<string>(), It.IsAny<string>())).Returns("token");
 
             // Act
             CreateUserResponse actual = (CreateUserResponse)uow.Execute(registerUserRequest);
 
             // Assert
             AssertSuccessCase(actual);
-            Assert.Equal(expected.Name, actual.Name);
-            Assert.Equal(expected.Culture, actual.Culture);
+        }
+
+        [Fact]
+        public void CreateUserFail()
+        {
+            // Arrange
+            CreateUserAndReturnTokenUOW uow = GetUOW();
+            CreateUserRequest registerUserRequest = new CreateUserRequest();
+
+            var response = new CreateUserResponse
+            {
+                Token = "dsa",
+                Result = new BaseResponse.OperationResult()
+                {
+                    Errors = new List<IError>()
+                    {
+                        new Error(){ErrorCode="", Message=""}
+                    }
+                }
+            };
+
+            userBusiness.Setup(o => o.CreateUser(It.IsAny<CreateUserRequest>())).Returns(Task.FromResult(response));
+
+            // Act
+            CreateUserResponse actual = (CreateUserResponse)uow.Execute(registerUserRequest);
+
+            // Assert
+            AssertFailCase(actual);
+            Assert.True(string.IsNullOrEmpty(actual.Token));
         }
     }
 }

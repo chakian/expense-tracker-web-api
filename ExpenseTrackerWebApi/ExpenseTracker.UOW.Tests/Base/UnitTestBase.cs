@@ -1,43 +1,38 @@
 ﻿using ExpenseTracker.Common.Interfaces.Models;
-using ExpenseTracker.Models.Base;
 using ExpenseTracker.Persistence.Context;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Logging;
-using System;
+using Moq;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace ExpenseTracker.UOW.Tests
 {
-    public abstract class UnitTestBase : IDisposable
+    public abstract class UnitTestBase
     {
-        private LoggerFactory loggerFactory;
-        protected ExpenseTrackerContext DbContext { get; private set; }
+        protected Mock<ExpenseTrackerContext> context { get; private set; }
 
-        public UnitTestBase(ITestOutputHelper testOutputHelper)
+        public UnitTestBase()
         {
-            var builder = new DbContextOptionsBuilder<ExpenseTrackerContext>();
+            var contextOptions = new Mock<DbContextOptions<ExpenseTrackerContext>>();
+            contextOptions.Setup(o => o.ContextType).Returns(typeof(ExpenseTrackerContext));
 
-            var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
-            var connectionString = connectionStringBuilder.ToString();
-            var connection = new SqliteConnection(connectionString);
-            connection.Open();
-            builder.UseSqlite(connection);
+            var builder = new Mock<DbContextOptionsBuilder<ExpenseTrackerContext>>();
+            builder.Setup(o => o.Options).Returns(contextOptions.Object);
 
-            DbContext = new ExpenseTrackerContext(builder.Options);
-            DbContext.Database.EnsureCreated();
+            context = new Mock<ExpenseTrackerContext>(builder.Object.Options);
 
-            loggerFactory = new LoggerFactory();
-            loggerFactory.AddProvider(new XunitLoggerProvider(testOutputHelper));
+            var db = new Mock<DatabaseFacade>(context.Object);
+            db.Setup(o => o.BeginTransaction());
+            db.Setup(o => o.CommitTransaction());
+            db.Setup(o => o.RollbackTransaction());
+
+            context.Setup(o => o.Database).Returns(db.Object);
         }
 
-        public void Dispose() => DbContext.Database.EnsureDeleted();
+        protected ILogger<T> GetLogger<T>() => new Mock<ILogger<T>>().Object;
 
-        protected ILogger<T> GetLogger<T>()
-        {
-            return loggerFactory.CreateLogger<T>();
-        }
+        protected ExpenseTrackerContext GetContext() => context.Object;
 
         protected void AssertSuccessCase(IBaseResponse response)
         {
@@ -46,24 +41,13 @@ namespace ExpenseTracker.UOW.Tests
             Assert.True(response.Result.IsSuccessful, "Expected the result to be successful but it is not!");
             Assert.Null(response.Result.Errors);
         }
-        protected void AssertSingleErrorCase(IBaseResponse response, string errorCode)
+        protected void AssertFailCase(IBaseResponse response)
         {
             Assert.NotNull(response);
             Assert.NotNull(response.Result);
-            Assert.False(response.Result.IsSuccessful);
-            Assert.Single(response.Result.Errors);
-            Assert.Equal(errorCode, response.Result.Errors[0].ErrorCode);
-        }
-        protected void AssertMultipleErrorCase(IBaseResponse response, params string[] errorCodes)
-        {
-            Assert.NotNull(response);
-            Assert.NotNull(response.Result);
-            Assert.False(response.Result.IsSuccessful);
-            Assert.Equal(errorCodes.Length, response.Result.Errors.Count);
-            foreach (string errorCode in errorCodes)
-            {
-                Assert.Contains(response.Result.Errors, q => q.ErrorCode == errorCode);
-            }
+            Assert.False(response.Result.IsSuccessful, "Expected the result to be failure but it is not!");
+            Assert.NotNull(response.Result.Errors);
+            Assert.NotEmpty(response.Result.Errors);
         }
     }
 }
