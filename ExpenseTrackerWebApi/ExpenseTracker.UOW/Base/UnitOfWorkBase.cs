@@ -26,7 +26,6 @@ namespace ExpenseTracker.UOW.Base
                 // TODO: Transaction mechanism isn't working! Fix this!
                 dbContext.Database.BeginTransaction();
                 var response = ExecuteInternal(request);
-                //TODO: Change this to true
                 if (response.IsSuccessful)
                 {
                     dbContext.Database.CommitTransaction();

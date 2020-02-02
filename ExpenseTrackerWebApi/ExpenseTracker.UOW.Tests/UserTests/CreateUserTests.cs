@@ -1,10 +1,7 @@
 ﻿using ExpenseTracker.UOW.UserWorks;
-using ExpenseTracker.Business.Options;
-using ExpenseTracker.Business;
 using Xunit;
 using ExpenseTracker.Models.UserModels;
 using Moq;
-using Microsoft.Extensions.Options;
 using ExpenseTracker.Business.Interfaces;
 using System.Threading.Tasks;
 using ExpenseTracker.Models.Base;
@@ -45,8 +42,9 @@ namespace ExpenseTracker.UOW.Tests.UserTests
             };
             var response = new CreateUserResponse
             {
+                Id = "tretertgre",
                 Name = "test",
-                Culture = null
+                Culture = "tr-TR"
             };
 
             userBusiness.Setup(o => o.CreateUser(It.IsAny<CreateUserRequest>())).Returns(Task.FromResult(response));
@@ -57,6 +55,8 @@ namespace ExpenseTracker.UOW.Tests.UserTests
 
             // Assert
             AssertSuccessCase(actual);
+            Assert.False(string.IsNullOrEmpty(actual.Id));
+            Assert.False(string.IsNullOrEmpty(actual.Culture));
         }
 
         [Fact]
@@ -79,6 +79,28 @@ namespace ExpenseTracker.UOW.Tests.UserTests
             };
 
             userBusiness.Setup(o => o.CreateUser(It.IsAny<CreateUserRequest>())).Returns(Task.FromResult(response));
+
+            // Act
+            CreateUserResponse actual = (CreateUserResponse)uow.Execute(registerUserRequest);
+
+            // Assert
+            AssertFailCase(actual);
+            Assert.True(string.IsNullOrEmpty(actual.Token));
+        }
+
+        [Fact]
+        public void CreateUserFailNoToken()
+        {
+            // Arrange
+            CreateUserAndReturnTokenUOW uow = GetUOW();
+            CreateUserRequest registerUserRequest = new CreateUserRequest();
+
+            var response = new CreateUserResponse
+            {
+            };
+
+            userBusiness.Setup(o => o.CreateUser(It.IsAny<CreateUserRequest>())).Returns(Task.FromResult(response));
+            userInternalTokenBusiness.Setup(o => o.GenerateToken(It.IsAny<string>(), It.IsAny<string>())).Returns("");
 
             // Act
             CreateUserResponse actual = (CreateUserResponse)uow.Execute(registerUserRequest);
