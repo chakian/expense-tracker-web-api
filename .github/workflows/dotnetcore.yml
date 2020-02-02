@@ -8,5 +8,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - uses: actions/setup-dotnet@v1.4.0
+    with:
+      dotnet-version: 3.1
     - name: Build with dotnet
       run: find . -type f \( -iname "*.sln" \) | xargs -n1 dotnet build --configuration Release
