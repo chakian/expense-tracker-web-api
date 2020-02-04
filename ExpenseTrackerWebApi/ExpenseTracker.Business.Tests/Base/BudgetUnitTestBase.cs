@@ -9,6 +9,11 @@ namespace ExpenseTracker.Business.Tests.Base
         {
         }
 
+        protected BudgetBusiness GetBudgetBusiness()
+        {
+            return new BudgetBusiness(GetLogger<BudgetBusiness>(), DbContext);
+        }
+
         protected Currency AddCurrency(string currencyCode = "TRY", string displayName = "TL", string longName = "TURKISH_LIRA")
         {
             Currency currency = new Currency()
@@ -21,6 +26,38 @@ namespace ExpenseTracker.Business.Tests.Base
             DbContext.Currencies.Add(currency);
             DbContext.SaveChanges();
             return currency;
+        }
+
+        protected Budget AddBudget(string budgetName, int currencyId, string userId)
+        {
+            var budget = new Budget()
+            {
+                Name = budgetName,
+                CurrencyId = currencyId,
+                IsActive = true
+            };
+            DbContext.Budgets.Add(budget);
+            DbContext.SaveChanges();
+            DbContext.BudgetUsers.Add(new Persistence.Context.DbModels.BudgetUser()
+            {
+                UserId = userId,
+                BudgetId = budget.BudgetId,
+                IsActive = true
+            });
+            DbContext.SaveChanges();
+
+            return budget;
+        }
+
+        protected void AddUserToBudget(int budgetId, string userId)
+        {
+            DbContext.BudgetUsers.Add(new Persistence.Context.DbModels.BudgetUser()
+            {
+                UserId = userId,
+                BudgetId = budgetId,
+                IsActive = true
+            });
+            DbContext.SaveChanges();
         }
     }
 }

@@ -12,18 +12,13 @@ namespace ExpenseTracker.Business.Tests.BudgetTests
         {
         }
 
-        private BudgetBusiness GetBudgetBusiness()
-        {
-            return new BudgetBusiness(GetLogger<BudgetBusiness>(), DbContext);
-        }
-
         [Fact]
         public void CreateBudget_Success()
         {
             // Arrange
             var user = AddUser();
             var currency = AddCurrency();
-            CreateBudgetRequest request = new CreateBudgetRequest()
+            var request = new CreateBudgetRequest()
             {
                 UserId = user.Id,
                 BudgetName = "testBudget",
@@ -48,27 +43,12 @@ namespace ExpenseTracker.Business.Tests.BudgetTests
             // Arrange
             var user = AddUser();
             var currency = AddCurrency();
+            var budget = AddBudget("testBudget", currency.CurrencyId, user.Id);
 
-            var budget = new Persistence.Context.DbModels.Budget()
-            {
-                Name = "testBudget",
-                CurrencyId = currency.CurrencyId,
-                IsActive = true
-            };
-            DbContext.Budgets.Add(budget);
-            DbContext.SaveChanges();
-            DbContext.BudgetUsers.Add(new Persistence.Context.DbModels.BudgetUser()
+            var request = new CreateBudgetRequest()
             {
                 UserId = user.Id,
-                BudgetId = budget.BudgetId,
-                IsActive = true
-            });
-            DbContext.SaveChanges();
-
-            CreateBudgetRequest request = new CreateBudgetRequest()
-            {
-                UserId = user.Id,
-                BudgetName = "testBudget",
+                BudgetName = budget.Name,
                 CurrencyId = currency.CurrencyId
             };
 

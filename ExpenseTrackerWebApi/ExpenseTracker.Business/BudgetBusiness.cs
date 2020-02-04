@@ -5,7 +5,6 @@ using ExpenseTracker.Common.Constants;
 using ExpenseTracker.Models.BudgetModels;
 using ExpenseTracker.Persistence.Context;
 using ExpenseTracker.Persistence.Context.DbModels;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,24 +13,35 @@ using System.Threading.Tasks;
 
 namespace ExpenseTracker.Business
 {
-    public class BudgetBusiness : AuthenticatedBusinessBase<BudgetBusiness>, IBudgetBusiness
+    public class BudgetBusiness : BudgetBusinessBase<BudgetBusiness>, IBudgetBusiness
     {
-        private readonly ExpenseTrackerContext dbContext;
-
-        public BudgetBusiness(ILogger<BudgetBusiness> logger, ExpenseTrackerContext dbContext) : base(logger)
+        public BudgetBusiness(ILogger<BudgetBusiness> logger, ExpenseTrackerContext dbContext) : base(logger, dbContext)
         {
-            this.dbContext = dbContext;
         }
 
         #region Private Methods
-        private List<Budget> GetBudgetsOfUser(string userId) =>
-            dbContext.Budgets.Where(b => b.IsActive && b.BudgetUsers.Any(bu => bu.IsActive && bu.UserId.Equals(userId)))
-                .Include(b => b.Currency)
-                .ToList();
-
-        private bool DoesBudgetExistsWithSameNameForUser(List<Budget> budgets, string budgetName)
+        private bool DoesBudgetExistsWithSameNameForUser(string budgetName, string userId)
         {
-            if (budgets.Any(b => b.Name.ToLowerInvariant().Equals(budgetName.ToLowerInvariant())))
+            var budgetList = GetBudgetsOfUser(userId);
+            return DoesBudgetExistsWithSameName(budgetList, budgetName);
+        }
+
+        private bool DoesBudgetExistsWithSameNameForOtherUsersOfThisBudget(int budgetId, string budgetName, string userId)
+        {
+            var userList = GetUsersOfBudget(budgetId);
+            foreach (var user in userList)
+            {
+                if (DoesBudgetExistsWithSameNameForUser(budgetName, user.UserId))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool DoesBudgetExistsWithSameName(List<Budget> budgetList, string budgetName)
+        {
+            if (budgetList.Any(b => b.IsActive && b.Name.ToLowerInvariant().Equals(budgetName.ToLowerInvariant())))
             {
                 return true;
             }
@@ -44,8 +54,7 @@ namespace ExpenseTracker.Business
         {
             CreateBudgetResponse response = new CreateBudgetResponse();
 
-            var budgets = GetBudgetsOfUser(request.UserId);
-            if (DoesBudgetExistsWithSameNameForUser(budgets, request.BudgetName))
+            if (DoesBudgetExistsWithSameNameForUser(request.BudgetName, request.UserId))
             {
                 response.AddError(ErrorCodes.BUDGET_EXISTS_WITH_SAME_NAME);
                 return response;
@@ -65,5 +74,45 @@ namespace ExpenseTracker.Business
 
             return response;
         }
+
+        public async Task<UpdateBudgetResponse> UpdateBudget(UpdateBudgetRequest request)
+        {
+            UpdateBudgetResponse response = new UpdateBudgetResponse();
+
+            var budget = GetBudgetById(request.BudgetId, request.UserId);
+            if(budget == null)
+            {
+                response.AddError(ErrorCodes.BUDGET_DOESNT_BELONG_TO_MODIFYING_USER);
+                return response;
+            }
+            if (DoesBudgetExistsWithSameNameForUser(request.BudgetName, request.UserId))
+            {
+                response.AddError(ErrorCodes.BUDGET_EXISTS_WITH_SAME_NAME);
+                return response;
+            }
+            if (DoesBudgetExistsWithSameNameForOtherUsersOfThisBudget(request.BudgetId, request.BudgetName, request.UserId))
+            {
+                response.AddError(ErrorCodes.BUDGET_EXISTS_ON_ANOTHER_USER_WITH_SAME_NAME);
+                return response;
+            }
+
+            if(!string.IsNullOrEmpty(request.BudgetName))
+            {
+                budget.Name = request.BudgetName;
+            }
+            if (request.CurrencyId > 0)
+            {
+                budget.CurrencyId = request.CurrencyId;
+            }
+            await dbContext.SaveChangesAsync();
+
+            response.BudgetId = budget.BudgetId;
+
+            return response;
+        }
+        
+        public async Task<DeleteBudgetResponse> DeleteBudget(DeleteBudgetRequest request) => throw new NotImplementedException();
+        
+        public async Task<GetBudgetsResponse> GetBudgets(GetBudgetsRequest request) => throw new NotImplementedException();
     }
 }
