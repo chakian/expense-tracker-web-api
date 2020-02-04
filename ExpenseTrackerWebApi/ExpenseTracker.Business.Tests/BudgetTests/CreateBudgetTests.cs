@@ -1,4 +1,5 @@
 ﻿using ExpenseTracker.Business.Tests.Base;
+using ExpenseTracker.Common.Constants;
 using ExpenseTracker.Models.BudgetModels;
 using Xunit;
 using Xunit.Abstractions;
@@ -59,7 +60,8 @@ namespace ExpenseTracker.Business.Tests.BudgetTests
             DbContext.BudgetUsers.Add(new Persistence.Context.DbModels.BudgetUser()
             {
                 UserId = user.Id,
-                BudgetId = budget.BudgetId
+                BudgetId = budget.BudgetId,
+                IsActive = true
             });
             DbContext.SaveChanges();
 
@@ -69,17 +71,12 @@ namespace ExpenseTracker.Business.Tests.BudgetTests
                 BudgetName = "testBudget",
                 CurrencyId = currency.CurrencyId
             };
-            var expected = new CreateBudgetResponse()
-            {
-                BudgetId = 1
-            };
 
             // Act
             var actual = GetBudgetBusiness().CreateBudget(request).Result;
 
             // Assert
-            AssertSuccessCase(actual);
-            Assert.Equal(expected.BudgetId, actual.BudgetId);
+            AssertSingleErrorCase(actual, ErrorCodes.BUDGET_EXISTS_WITH_SAME_NAME);
         }
     }
 }
