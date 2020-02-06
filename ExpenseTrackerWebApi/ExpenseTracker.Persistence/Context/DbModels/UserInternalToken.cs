@@ -11,7 +11,10 @@ namespace ExpenseTracker.Persistence.Context.DbModels
         }
 
         public string Id { get; set; }
-        
+
+        [Required]
+        public string TokenString { get; set; }
+
         [Required]
         public string UserId { get; set; }
         
