@@ -11,5 +11,6 @@
         public const string REGISTER_NAME_EMPTY = "ET-001-007";
         public const string LOGIN_EMAIL_NOT_FOUND = "ET-001-008";
         public const string LOGIN_WRONG_PASSWORD = "ET-001-009";
+        public const string TOKEN_EMPTY = "ET-001-010";
     }
 }

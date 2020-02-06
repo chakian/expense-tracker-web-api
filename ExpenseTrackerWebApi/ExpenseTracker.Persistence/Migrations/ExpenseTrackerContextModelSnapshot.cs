@@ -223,6 +223,15 @@ namespace ExpenseTracker.Persistence.Migrations
                     b.Property<int>("BudgetId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("CanDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanRead")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanWrite")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("InsertTime")
                         .HasColumnType("datetime2");
 
@@ -230,6 +239,12 @@ namespace ExpenseTracker.Persistence.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsOwner")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("UpdateTime")

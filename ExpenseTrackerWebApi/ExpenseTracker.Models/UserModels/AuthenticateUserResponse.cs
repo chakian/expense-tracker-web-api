@@ -2,7 +2,7 @@
 
 namespace ExpenseTracker.Models.UserModels
 {
-    public class AuthenticateUserResponse : BaseResponse
+    public sealed class AuthenticateUserResponse : BaseResponse
     {
         public string Id { get; set; }
 
