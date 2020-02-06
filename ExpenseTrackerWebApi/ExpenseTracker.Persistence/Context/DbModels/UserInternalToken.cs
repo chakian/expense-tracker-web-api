@@ -23,6 +23,8 @@ namespace ExpenseTracker.Persistence.Context.DbModels
 
         public string CreatingIp { get; set; }
 
+        public string Device { get; set; }
+
         public DateTime ValidFrom { get; set; }
         public DateTime ValidTo { get; set; }
 
