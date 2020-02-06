@@ -28,7 +28,6 @@ namespace ExpenseTracker.Business.Tests.UserTests
                 Name = "test",
                 Password = "123456",
                 PasswordRepeat = "123456",
-                Culture = "",
                 RequestIp = ""
             };
             var expected = new AuthenticateUserResponse()
@@ -65,7 +64,6 @@ namespace ExpenseTracker.Business.Tests.UserTests
                 Name = "test",
                 Password = "123456",
                 PasswordRepeat = "123456",
-                Culture = "",
                 RequestIp = ""
             };
 
@@ -88,7 +86,6 @@ namespace ExpenseTracker.Business.Tests.UserTests
                 Name = "test",
                 Password = "123456",
                 PasswordRepeat = "123456",
-                Culture = "",
                 RequestIp = ""
             };
 
@@ -111,7 +108,6 @@ namespace ExpenseTracker.Business.Tests.UserTests
                 Name = " ",
                 Password = "123456",
                 PasswordRepeat = "123456",
-                Culture = "",
                 RequestIp = ""
             };
 
@@ -134,7 +130,6 @@ namespace ExpenseTracker.Business.Tests.UserTests
                 Name = "test",
                 Password = "",
                 PasswordRepeat = "",
-                Culture = "",
                 RequestIp = ""
             };
 
@@ -157,7 +152,6 @@ namespace ExpenseTracker.Business.Tests.UserTests
                 Name = "test",
                 Password = "1234567",
                 PasswordRepeat = "123456",
-                Culture = "",
                 RequestIp = ""
             };
 
@@ -180,7 +174,6 @@ namespace ExpenseTracker.Business.Tests.UserTests
                 Name = "test",
                 Password = "12345",
                 PasswordRepeat = "12345",
-                Culture = "",
                 RequestIp = ""
             };
 

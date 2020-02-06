@@ -36,7 +36,6 @@ namespace ExpenseTracker.Business.Tests.UserTests
             {
                 Email = "test@test.com",
                 Password = "123456",
-                Culture = "",
                 RequestIp = "1.1.1.1"
             };
 
@@ -67,7 +66,6 @@ namespace ExpenseTracker.Business.Tests.UserTests
             {
                 Email = "test@test.com",
                 Password = "123456",
-                Culture = "",
                 RequestIp = "1.1.1.1"
             };
 
@@ -90,14 +88,12 @@ namespace ExpenseTracker.Business.Tests.UserTests
                 PasswordHash = "1411501582391102022111941545898146128230134207126393901341752432021821214658220108146"
             });
             DbContext.SaveChanges();
-            var expectedUserId = DbContext.Users.Single().Id;
 
             IUserBusiness userBusiness = GetUserBusiness();
             AuthenticateUserRequest authenticateUserRequest = new AuthenticateUserRequest()
             {
                 Email = "test@test.com",
                 Password = "123457",
-                Culture = "",
                 RequestIp = "1.1.1.1"
             };
 

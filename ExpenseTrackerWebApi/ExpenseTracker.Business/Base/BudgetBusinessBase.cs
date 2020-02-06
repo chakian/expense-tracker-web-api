@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ExpenseTracker.Business.Base
 {
@@ -16,18 +17,20 @@ namespace ExpenseTracker.Business.Base
             this.dbContext = dbContext;
         }
 
-        protected List<Budget> GetAllBudgetsOfUser(string userId) =>
-            dbContext.Budgets.Where(b => b.BudgetUsers.Any(bu => bu.IsActive && bu.UserId.Equals(userId)))
+        protected async Task<List<Budget>> GetAllBudgetsOfUser(string userId) =>
+            await dbContext.Budgets.Where(b => b.BudgetUsers.Any(bu => bu.IsActive && bu.UserId.Equals(userId)))
                 .Include(b => b.Currency)
-                .ToList();
-        protected List<Budget> GetActiveBudgetsOfUser(string userId) =>
-            dbContext.Budgets.Where(b => b.IsActive && b.BudgetUsers.Any(bu => bu.IsActive && bu.UserId.Equals(userId)))
+                .ToListAsync();
+        protected async Task<List<Budget>> GetActiveBudgetsOfUser(string userId) =>
+            await dbContext.Budgets.Where(b => b.IsActive && b.BudgetUsers.Any(bu => bu.IsActive && bu.UserId.Equals(userId)))
                 .Include(b => b.Currency)
-                .ToList();
-        protected List<BudgetUser> GetUsersOfBudget(int budgetId) =>
-            dbContext.BudgetUsers.Where(bu => bu.IsActive && bu.BudgetId == budgetId)
-            .ToList();
-        protected Budget GetBudgetById(int budgetId, string userId) =>
-            dbContext.Budgets.SingleOrDefault(b => b.BudgetId == budgetId && b.BudgetUsers.Any(bu => bu.IsActive && bu.UserId.Equals(userId)));
+                .ToListAsync();
+        protected async Task<List<BudgetUser>> GetUsersOfBudget(int budgetId) =>
+            await dbContext.BudgetUsers.Where(bu => bu.IsActive && bu.BudgetId == budgetId)
+            .ToListAsync();
+        protected async Task<Budget> GetBudgetById(int budgetId, string userId) =>
+            await dbContext.Budgets.SingleOrDefaultAsync(b => b.BudgetId == budgetId && b.BudgetUsers.Any(bu => bu.IsActive && bu.UserId.Equals(userId)));
+        protected async Task<BudgetUser> GetUsersRoleInBudget(int budgetId, string userId) =>
+            await dbContext.BudgetUsers.SingleAsync(bu => bu.IsActive && bu.BudgetId == budgetId && bu.UserId == userId);
     }
 }

@@ -37,7 +37,6 @@ namespace ExpenseTracker.UOW.Tests.UserTests
                 Name = "test",
                 Password = "123456",
                 PasswordRepeat = "123456",
-                Culture = "",
                 RequestIp = ""
             };
             var response = new CreateUserResponse

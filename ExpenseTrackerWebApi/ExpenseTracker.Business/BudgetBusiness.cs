@@ -21,18 +21,18 @@ namespace ExpenseTracker.Business
         }
 
         #region Private Methods
-        private bool DoesBudgetExistsWithSameNameForUser(string budgetName, string userId)
+        private async Task<bool> DoesBudgetExistsWithSameNameForUser(string budgetName, string userId)
         {
-            var budgetList = GetActiveBudgetsOfUser(userId);
+            var budgetList = await GetActiveBudgetsOfUser(userId);
             return DoesBudgetExistsWithSameName(budgetList, budgetName);
         }
 
-        private bool DoesBudgetExistsWithSameNameForOtherUsersOfThisBudget(int budgetId, string budgetName, string userId)
+        private async Task<bool> DoesBudgetExistsWithSameNameForOtherUsersOfThisBudget(int budgetId, string budgetName, string userId)
         {
-            var userList = GetUsersOfBudget(budgetId);
+            var userList = await GetUsersOfBudget(budgetId);
             foreach (var user in userList)
             {
-                if (DoesBudgetExistsWithSameNameForUser(budgetName, user.UserId))
+                if (await DoesBudgetExistsWithSameNameForUser(budgetName, user.UserId))
                 {
                     return true;
                 }
@@ -55,7 +55,7 @@ namespace ExpenseTracker.Business
         {
             CreateBudgetResponse response = new CreateBudgetResponse();
 
-            if (DoesBudgetExistsWithSameNameForUser(request.BudgetName, request.UserId))
+            if (await DoesBudgetExistsWithSameNameForUser(request.BudgetName, request.UserId))
             {
                 response.AddError(ErrorCodes.BUDGET_EXISTS_WITH_SAME_NAME);
                 return response;
@@ -107,18 +107,18 @@ namespace ExpenseTracker.Business
         {
             UpdateBudgetResponse response = new UpdateBudgetResponse();
 
-            var budget = GetBudgetById(request.BudgetId, request.UserId);
+            var budget = await GetBudgetById(request.BudgetId, request.UserId);
             if (budget == null)
             {
                 response.AddError(ErrorCodes.BUDGET_DOESNT_BELONG_TO_MODIFYING_USER);
                 return response;
             }
-            if (DoesBudgetExistsWithSameNameForUser(request.BudgetName, request.UserId))
+            if (await DoesBudgetExistsWithSameNameForUser(request.BudgetName, request.UserId))
             {
                 response.AddError(ErrorCodes.BUDGET_EXISTS_WITH_SAME_NAME);
                 return response;
             }
-            if (DoesBudgetExistsWithSameNameForOtherUsersOfThisBudget(request.BudgetId, request.BudgetName, request.UserId))
+            if (await DoesBudgetExistsWithSameNameForOtherUsersOfThisBudget(request.BudgetId, request.BudgetName, request.UserId))
             {
                 response.AddError(ErrorCodes.BUDGET_EXISTS_ON_ANOTHER_USER_WITH_SAME_NAME);
                 return response;
@@ -149,7 +149,7 @@ namespace ExpenseTracker.Business
         {
             DeleteBudgetResponse response = new DeleteBudgetResponse();
 
-            var budget = GetBudgetById(request.BudgetId, request.UserId);
+            var budget = await GetBudgetById(request.BudgetId, request.UserId);
             if (budget == null)
             {
                 response.AddError(ErrorCodes.BUDGET_DOESNT_BELONG_TO_MODIFYING_USER);
@@ -169,7 +169,48 @@ namespace ExpenseTracker.Business
             return response;
         }
 
-        public async Task<GetBudgetsResponse> GetBudgets(GetBudgetsRequest request) => throw new NotImplementedException();
+        public async Task<GetBudgetsResponse> GetBudgets(GetBudgetsRequest request)
+        {
+            GetBudgetsResponse response = new GetBudgetsResponse();
+            response.BudgetList = new List<GetBudgetsResponse.Budget>();
+
+            var list = await GetActiveBudgetsOfUser(request.UserId);
+            list.ForEach(async b =>
+            {
+                var budgetUser = await GetUsersRoleInBudget(b.BudgetId, request.UserId);
+                response.BudgetList.Add(new GetBudgetsResponse.Budget
+                {
+                    Id = b.BudgetId,
+                    Name = b.Name,
+                    CanDelete = budgetUser.IsOwner,
+                    CanModify = budgetUser.IsAdmin
+                });
+            });
+
+            return response;
+        }
+
+        public async Task<GetBudgetResponse> GetBudgetById(GetBudgetRequest request)
+        {
+            GetBudgetResponse response = new GetBudgetResponse();
+
+            var budget = await GetBudgetById(request.BudgetId, request.UserId);
+            if (budget == null)
+            {
+                response.AddError(ErrorCodes.BUDGET_DOESNT_BELONG_TO_USER);
+                return response;
+            }
+
+            var budgetUser = await GetUsersRoleInBudget(request.BudgetId, request.UserId);
+
+            response.BudgetId = budget.BudgetId;
+            response.BudgetName = budget.Name;
+            response.CanDeleteBudget = budgetUser.IsOwner;
+            response.CanModifyBudget = budgetUser.IsAdmin;
+
+            return response;
+        }
+
         public async Task<CreateBudgetUserResponse> CreateBudgetUser(CreateBudgetUserRequest request) => throw new NotImplementedException();
     }
 }

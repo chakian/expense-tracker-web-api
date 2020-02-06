@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpenseTracker.UOW", "Expen
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Business", "Business", "{DA3FD19F-A09C-4DC2-9A1A-A499C9044B3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseTracker.UOW.Tests", "ExpenseTracker.UOW.Tests\ExpenseTracker.UOW.Tests.csproj", "{B5CF3C92-2C26-4B02-9380-4020A3A583ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpenseTracker.UOW.Tests", "ExpenseTracker.UOW.Tests\ExpenseTracker.UOW.Tests.csproj", "{B5CF3C92-2C26-4B02-9380-4020A3A583ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
