@@ -7,7 +7,7 @@ namespace ExpenseTracker.Business.Tests.BaseResponseTests
     public class ResponseExtensionTests
     {
         [Fact]
-        public void AddError_NullCase()
+        public void AddErrorNullCase()
         {
             // Arrange
             BaseResponse response = new BaseResponse();

@@ -1,5 +1,4 @@
 ﻿using ExpenseTracker.Persistence.Identity;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpenseTracker.Persistence.Context.DbModels
 {
@@ -12,5 +11,11 @@ namespace ExpenseTracker.Persistence.Context.DbModels
 
         public string UserId { get; set; }
         public virtual User User { get; set; }
+
+        public bool IsOwner { get; set; }
+        public bool IsAdmin { get; set; }
+        public bool CanRead { get; set; }
+        public bool CanWrite { get; set; }
+        public bool CanDelete { get; set; }
     }
 }

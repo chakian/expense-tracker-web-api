@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ExpenseTracker.Models.UserModels
 {
-    public class RegisterUserRequest : BaseRequest
+    public class CreateUserRequest : BaseRequest
     {
         [Required]
         public string Name { get; set; }
