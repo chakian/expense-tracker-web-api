@@ -13,7 +13,7 @@ namespace ExpenseTracker.Business.Tests.Base
         {
             Persistence.Identity.User user = new Persistence.Identity.User()
             {
-                Email = email
+                Email = email,
                 UserName = username,
                 PasswordHash = password
             };
