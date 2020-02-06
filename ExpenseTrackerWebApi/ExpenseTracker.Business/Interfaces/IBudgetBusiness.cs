@@ -1,4 +1,5 @@
 ﻿using ExpenseTracker.Models.BudgetModels;
+using ExpenseTracker.Models.BudgetUserModels;
 using System.Threading.Tasks;
 
 namespace ExpenseTracker.Business.Interfaces
@@ -9,5 +10,6 @@ namespace ExpenseTracker.Business.Interfaces
         Task<UpdateBudgetResponse> UpdateBudget(UpdateBudgetRequest request);
         Task<DeleteBudgetResponse> DeleteBudget(DeleteBudgetRequest request);
         Task<GetBudgetsResponse> GetBudgets(GetBudgetsRequest request);
+        Task<CreateBudgetUserResponse> CreateBudgetUser(CreateBudgetUserRequest request);
     }
 }

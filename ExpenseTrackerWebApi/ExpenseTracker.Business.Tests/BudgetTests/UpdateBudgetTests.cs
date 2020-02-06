@@ -65,6 +65,30 @@ namespace ExpenseTracker.Business.Tests.BudgetTests
         }
 
         [Fact]
+        public void UpdateBudget_Fail_UserIsNotAuthorizedToUpdate()
+        {
+            // Arrange
+            var user = AddUser();
+            var user2 = AddUser("test2", "test2@email.com");
+            var currency = AddCurrency();
+            var budget = AddBudget("testBudget", currency.CurrencyId, user.Id);
+            AddUserToBudget(budget.BudgetId, user2.Id, false, true, true, false);
+
+            var request = new UpdateBudgetRequest()
+            {
+                BudgetId = budget.BudgetId,
+                UserId = user2.Id,
+                BudgetName = "perfectName"
+            };
+
+            // Act
+            var actual = GetBudgetBusiness().UpdateBudget(request).Result;
+
+            // Assert
+            AssertSingleErrorCase(actual, ErrorCodes.BUDGET_USER_IS_NOT_AUTHORIZED_TO_MODIFY_BUDGET);
+        }
+
+        [Fact]
         public void UpdateBudget_Fail_SameNameExists()
         {
             // Arrange
@@ -96,7 +120,7 @@ namespace ExpenseTracker.Business.Tests.BudgetTests
             var user2 = AddUser("test2", "test2@email.com");
             var currency = AddCurrency();
             var budget = AddBudget("testBudget", currency.CurrencyId, user.Id);
-            AddUserToBudget(budget.BudgetId, user2.Id);
+            AddUserToBudget(budget.BudgetId, user2.Id, false, false, false, false);
             var budget2 = AddBudget("testBudget2", currency.CurrencyId, user2.Id);
 
             var request = new UpdateBudgetRequest()

@@ -3,6 +3,7 @@ using ExpenseTracker.Business.Extensions;
 using ExpenseTracker.Business.Interfaces;
 using ExpenseTracker.Common.Constants;
 using ExpenseTracker.Models.BudgetModels;
+using ExpenseTracker.Models.BudgetUserModels;
 using ExpenseTracker.Persistence.Context;
 using ExpenseTracker.Persistence.Context.DbModels;
 using Microsoft.Extensions.Logging;
@@ -60,17 +61,44 @@ namespace ExpenseTracker.Business
                 return response;
             }
 
-            Budget budget = new Budget()
+            dbContext.Database.BeginTransaction();
+            try
             {
-                CurrencyId = request.CurrencyId,
-                Name = request.BudgetName,
-                InsertTime = DateTime.UtcNow,
-                InsertUserId = request.UserId
-            };
-            await dbContext.Budgets.AddAsync(budget);
-            dbContext.SaveChanges();
+                Budget budget = new Budget()
+                {
+                    CurrencyId = request.CurrencyId,
+                    Name = request.BudgetName,
+                    InsertTime = DateTime.UtcNow,
+                    InsertUserId = request.UserId
+                };
+                await dbContext.Budgets.AddAsync(budget);
+                dbContext.SaveChanges();
 
-            response.BudgetId = budget.BudgetId;
+                BudgetUser budgetUser = new BudgetUser()
+                {
+                    BudgetId = budget.BudgetId,
+                    UserId = request.UserId,
+                    IsActive = true,
+                    IsOwner = true,
+                    IsAdmin = true,
+                    CanRead = true,
+                    CanWrite = true,
+                    CanDelete = true,
+                    InsertTime = DateTime.UtcNow,
+                    InsertUserId = request.UserId
+                };
+                await dbContext.BudgetUsers.AddAsync(budgetUser);
+                dbContext.SaveChanges();
+
+                dbContext.Database.CommitTransaction();
+
+                response.BudgetId = budget.BudgetId;
+            }
+            catch (Exception e)
+            {
+                dbContext.Database.RollbackTransaction();
+                throw e;
+            }
 
             return response;
         }
@@ -80,7 +108,7 @@ namespace ExpenseTracker.Business
             UpdateBudgetResponse response = new UpdateBudgetResponse();
 
             var budget = GetBudgetById(request.BudgetId, request.UserId);
-            if(budget == null)
+            if (budget == null)
             {
                 response.AddError(ErrorCodes.BUDGET_DOESNT_BELONG_TO_MODIFYING_USER);
                 return response;
@@ -95,8 +123,14 @@ namespace ExpenseTracker.Business
                 response.AddError(ErrorCodes.BUDGET_EXISTS_ON_ANOTHER_USER_WITH_SAME_NAME);
                 return response;
             }
+            var budgetUser = dbContext.BudgetUsers.Single(bu => bu.IsActive && bu.BudgetId == request.BudgetId && bu.UserId == request.UserId);
+            if (!budgetUser.IsAdmin)
+            {
+                response.AddError(ErrorCodes.BUDGET_USER_IS_NOT_AUTHORIZED_TO_MODIFY_BUDGET);
+                return response;
+            }
 
-            if(!string.IsNullOrEmpty(request.BudgetName))
+            if (!string.IsNullOrEmpty(request.BudgetName))
             {
                 budget.Name = request.BudgetName;
             }
@@ -110,9 +144,22 @@ namespace ExpenseTracker.Business
 
             return response;
         }
-        
-        public async Task<DeleteBudgetResponse> DeleteBudget(DeleteBudgetRequest request) => throw new NotImplementedException();
-        
+
+        public async Task<DeleteBudgetResponse> DeleteBudget(DeleteBudgetRequest request)
+        {
+            DeleteBudgetResponse response = new DeleteBudgetResponse();
+
+            var budget = GetBudgetById(request.BudgetId, request.UserId);
+            if (budget == null)
+            {
+                response.AddError(ErrorCodes.BUDGET_DOESNT_BELONG_TO_MODIFYING_USER);
+                return response;
+            }
+
+            return response;
+        }
+
         public async Task<GetBudgetsResponse> GetBudgets(GetBudgetsRequest request) => throw new NotImplementedException();
+        public async Task<CreateBudgetUserResponse> CreateBudgetUser(CreateBudgetUserRequest request) => throw new NotImplementedException();
     }
 }

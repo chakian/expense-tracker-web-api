@@ -1,6 +1,8 @@
 ﻿using ExpenseTracker.Business.Tests.Base;
 using ExpenseTracker.Common.Constants;
 using ExpenseTracker.Models.BudgetModels;
+using System;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -30,11 +32,36 @@ namespace ExpenseTracker.Business.Tests.BudgetTests
             };
 
             // Act
-            var actual = GetBudgetBusiness().CreateBudget(request).Result;
+            var response = GetBudgetBusiness().CreateBudget(request).Result;
+            var actual = DbContext.Budgets.Single();
 
             // Assert
-            AssertSuccessCase(actual);
+            AssertSuccessCase(response);
             Assert.Equal(expected.BudgetId, actual.BudgetId);
+
+            var budgetUser = DbContext.BudgetUsers.Single(bu => bu.UserId == user.Id && bu.BudgetId == actual.BudgetId);
+            Assert.True(budgetUser.IsActive);
+            Assert.True(budgetUser.IsOwner);
+            Assert.True(budgetUser.IsAdmin);
+            Assert.True(budgetUser.CanRead);
+            Assert.True(budgetUser.CanWrite);
+            Assert.True(budgetUser.CanDelete);
+        }
+
+        [Fact]
+        public void CreateBudget_Fail_UserDoesntExist()
+        {
+            // Arrange
+            var currency = AddCurrency();
+            var request = new CreateBudgetRequest()
+            {
+                UserId = "abc",
+                BudgetName = "testBudget",
+                CurrencyId = currency.CurrencyId
+            };
+
+            // Act
+            Assert.ThrowsAny<AggregateException>(() => GetBudgetBusiness().CreateBudget(request).Result);
         }
 
         [Fact]

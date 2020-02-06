@@ -42,20 +42,30 @@ namespace ExpenseTracker.Business.Tests.Base
             {
                 UserId = userId,
                 BudgetId = budget.BudgetId,
-                IsActive = true
+                IsActive = true,
+                IsOwner = true,
+                IsAdmin = true,
+                CanRead = true,
+                CanWrite = true,
+                CanDelete = true
             });
             DbContext.SaveChanges();
 
             return budget;
         }
 
-        protected void AddUserToBudget(int budgetId, string userId)
+        protected void AddUserToBudget(int budgetId, string userId, bool isAdmin, bool canRead, bool canWrite, bool canDelete)
         {
             DbContext.BudgetUsers.Add(new Persistence.Context.DbModels.BudgetUser()
             {
                 UserId = userId,
                 BudgetId = budgetId,
-                IsActive = true
+                IsActive = true,
+                IsOwner = false,
+                IsAdmin = isAdmin,
+                CanRead = canRead,
+                CanWrite = canWrite,
+                CanDelete = canDelete
             });
             DbContext.SaveChanges();
         }
