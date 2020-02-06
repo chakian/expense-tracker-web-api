@@ -34,7 +34,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             // Arrange
             DbContext.UserInternalTokens.Add(new Persistence.Context.DbModels.UserInternalToken()
             {
-                Id = "newToken",
+                TokenString = "newToken",
                 CreatingIp = "1.1.1.1",
                 Issuer = jwtOptions.Value.Issuer,
                 IsValid = true,
@@ -48,7 +48,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             IUserInternalTokenBusiness userInternalTokenBusiness = getUserInternalTokenBusiness();
 
             // Act
-            var response = userInternalTokenBusiness.WriteToken("differenttoken", "testuser", "1.1.1.1", DateTime.UtcNow);
+            var response = userInternalTokenBusiness.WriteToken("differenttoken", "testuser", "1.1.1.1", "device", DateTime.UtcNow);
 
             var oldToken = DbContext.UserInternalTokens.Single(q => q.Id == "newToken");
 
@@ -77,7 +77,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             IUserInternalTokenBusiness userInternalTokenBusiness = getUserInternalTokenBusiness();
 
             // Act
-            var response = userInternalTokenBusiness.WriteToken("", "testuser", "1.1.1.1", DateTime.UtcNow);
+            var response = userInternalTokenBusiness.WriteToken("", "testuser", "1.1.1.1", "device", DateTime.UtcNow);
 
             var oldToken = DbContext.UserInternalTokens.Single(q => q.Id == "newToken");
 
@@ -108,7 +108,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
 
             // Act
             Thread.Sleep(1000);
-            var response = userInternalTokenBusiness.WriteToken("newToken", "testuser", "1.1.1.1", DateTime.UtcNow);
+            var response = userInternalTokenBusiness.WriteToken("newToken", "testuser", "1.1.1.1", "device", DateTime.UtcNow);
 
             var token = DbContext.UserInternalTokens.Single(q => q.Id == "newToken");
 
@@ -124,7 +124,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             IUserInternalTokenBusiness userInternalTokenBusiness = getUserInternalTokenBusiness();
 
             // Act
-            userInternalTokenBusiness.WriteToken("newToken", "testuser", "1.1.1.1", DateTime.UtcNow);
+            userInternalTokenBusiness.WriteToken("newToken", "testuser", "1.1.1.1", "device", DateTime.UtcNow);
 
             var actual = DbContext.UserInternalTokens.Single(q => q.Id == "newToken");
 
@@ -151,7 +151,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             // Arrange
             DbContext.UserInternalTokens.Add(new Persistence.Context.DbModels.UserInternalToken()
             {
-                Id = "newToken",
+                TokenString = "newToken",
                 CreatingIp = "1.1.1.1",
                 Issuer = "issuer",
                 IsValid = true,
@@ -165,7 +165,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             IUserInternalTokenBusiness userInternalTokenBusiness = getUserInternalTokenBusiness();
 
             // Act
-            string token = userInternalTokenBusiness.GetUsersActiveToken("testuser", jwtOptions.Value.Issuer, "1.1.1.1");
+            string token = userInternalTokenBusiness.GetUsersActiveToken("testuser", jwtOptions.Value.Issuer, "1.1.1.1", "device");
 
             // Assert
             Assert.False(string.IsNullOrEmpty(token), "Expected token string not to be null or empty");
@@ -191,7 +191,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             IUserInternalTokenBusiness userInternalTokenBusiness = getUserInternalTokenBusiness();
 
             // Act
-            string token = userInternalTokenBusiness.GetUsersActiveToken("newUser", jwtOptions.Value.Issuer, "1.1.1.1");
+            string token = userInternalTokenBusiness.GetUsersActiveToken("newUser", jwtOptions.Value.Issuer, "1.1.1.1", "device");
 
             // Assert
             Assert.True(string.IsNullOrEmpty(token), "Expected token to be null");
@@ -217,7 +217,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             IUserInternalTokenBusiness userInternalTokenBusiness = getUserInternalTokenBusiness();
 
             // Act
-            string token = userInternalTokenBusiness.GetUsersActiveToken("testuser", jwtOptions.Value.Issuer, "1.1.1.1");
+            string token = userInternalTokenBusiness.GetUsersActiveToken("testuser", jwtOptions.Value.Issuer, "1.1.1.1", "device");
 
             // Assert
             Assert.True(string.IsNullOrEmpty(token), "Expected token to be null");

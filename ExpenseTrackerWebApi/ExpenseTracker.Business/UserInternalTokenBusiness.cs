@@ -51,12 +51,12 @@ namespace ExpenseTracker.Business
             return tokenString;
         }
 
-        public string GetUsersActiveToken(string userId, string issuer, string creatingIp)
+        public string GetUsersActiveToken(string userId, string issuer, string creatingIp, string device)
         {
-            var token = GetActiveToken(userId, issuer, creatingIp);
+            var token = GetActiveToken(userId, issuer, creatingIp, device);
             if (token != null)
             {
-                return token.Id;
+                return token.TokenString;
             }
             else
             {
@@ -64,9 +64,9 @@ namespace ExpenseTracker.Business
             }
         }
 
-        private UserInternalToken GetActiveToken(string userId, string issuer, string ip, string tokenString = "")
+        private UserInternalToken GetActiveToken(string userId, string issuer, string ip, string device, string tokenString = "")
         {
-            var token = dbContext.UserInternalTokens.SingleOrDefault(q => q.UserId == userId && q.Issuer == issuer && q.CreatingIp == ip && q.ValidTo > DateTime.UtcNow && q.Id == tokenString);
+            var token = dbContext.UserInternalTokens.SingleOrDefault(q => q.UserId == userId && q.Issuer == issuer && q.CreatingIp == ip && q.ValidTo > DateTime.UtcNow && q.TokenString == tokenString);
             if (token == null)
             {
                 token = dbContext.UserInternalTokens.SingleOrDefault(q => q.UserId == userId && q.Issuer == issuer && q.CreatingIp == ip && q.ValidTo > DateTime.UtcNow);
@@ -74,7 +74,7 @@ namespace ExpenseTracker.Business
             return token;
         }
 
-        public BaseResponse WriteToken(string tokenString, string userId, string creatingIp, DateTime validFrom, bool isValid = true)
+        public BaseResponse WriteToken(string tokenString, string userId, string creatingIp, string device, DateTime validFrom, bool isValid = true)
         {
             //TODO: Learn about refresh tokens!
             BaseResponse response = new BaseResponse();
@@ -89,7 +89,7 @@ namespace ExpenseTracker.Business
                 {
                     AddNewToken(tokenString, userId, creatingIp, isValid);
                 }
-                else if (token.Id != tokenString)
+                else if (token.TokenString != tokenString)
                 {
                     token.IsValid = false;
                     token.ValidTo = DateTime.UtcNow;
@@ -110,7 +110,7 @@ namespace ExpenseTracker.Business
         {
             dbContext.UserInternalTokens.Add(new UserInternalToken()
             {
-                Id = tokenString,
+                TokenString = tokenString,
                 UserId = userId,
                 Issuer = appSettings.Issuer,
                 CreatingIp = creatingIp,

@@ -35,7 +35,7 @@ namespace ExpenseTracker.UOW.UserWorks
                 }
                 else
                 {
-                    userInternalTokenBusiness.WriteToken(token, response.Id, request.RequestIp, DateTime.UtcNow);
+                    userInternalTokenBusiness.WriteToken(token, response.Id, request.RequestIp, "device", DateTime.UtcNow);
                     response.Token = token;
                 }
             }
