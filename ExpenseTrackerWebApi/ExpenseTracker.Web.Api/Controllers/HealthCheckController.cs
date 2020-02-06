@@ -12,6 +12,7 @@ namespace ExpenseTracker.Web.Api.Controllers
     public class HealthCheckController : Controller
     {
         [HttpGet]
+        [Route("get")]
         public HealthCheck Get()
         {
             var health = new HealthCheck()

@@ -1,8 +1,8 @@
-﻿using ExpenseTracker.Web.Api.Models.ResponseModels;
+﻿using ExpenseTracker.Models.BudgetModels;
+using ExpenseTracker.UOW.BudgetWorks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ExpenseTracker.Web.Api.Controllers
 {
@@ -11,25 +11,43 @@ namespace ExpenseTracker.Web.Api.Controllers
     [Route("api/budget")]
     public class BudgetController : ExpenseTrackerAuthenticatedControllerBase<BudgetController>
     {
-        public BudgetController(ILogger<BudgetController> logger) : base(logger)
+        private readonly CreateBudgetUOW createBudget;
+        public BudgetController(ILogger<BudgetController> logger,
+            CreateBudgetUOW createBudget) : base(logger)
         {
+            this.createBudget = createBudget;
         }
 
-        [HttpGet]
-        public IEnumerable<Budget> GetAll()
+        //[HttpGet]
+        //[Route("getall")]
+        //public IEnumerable<Budget> GetAll()
+        //{
+        //    var x = User;
+        //    //var budgets = context.Budgets.ToList();//.Where(q=>q.BudgetUsers.Any(u=>u.UserId.Equals(""))).ToList();
+        //    List<Budget> budgetList = new List<Budget>();
+        //    //budgets.ForEach(b =>
+        //    //{
+        //    //    budgetList.Add(new Budget
+        //    //    {
+        //    //        Id = b.BudgetId,
+        //    //        Name = b.Name
+        //    //    });
+        //    //});
+        //    return budgetList;
+        //}
+
+        [HttpPut]
+        [Route("create")]
+        public ActionResult Create([FromBody] CreateBudgetRequest model)
         {
-            var x = User;
-            //var budgets = context.Budgets.ToList();//.Where(q=>q.BudgetUsers.Any(u=>u.UserId.Equals(""))).ToList();
-            List<Budget> budgetList = new List<Budget>();
-            //budgets.ForEach(b =>
-            //{
-            //    budgetList.Add(new Budget
-            //    {
-            //        Id = b.BudgetId,
-            //        Name = b.Name
-            //    });
-            //});
-            return budgetList;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var response = createBudget.Execute(model);
+
+            return GetActionResult(response);
         }
     }
 }

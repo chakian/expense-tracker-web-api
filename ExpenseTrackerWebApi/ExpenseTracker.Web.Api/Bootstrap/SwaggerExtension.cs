@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ExpenseTracker.Web.Api.Bootstrap
 {
@@ -19,7 +20,7 @@ namespace ExpenseTracker.Web.Api.Bootstrap
                     //TermsOfService = new System.Uri("https://www.talkingdotnet.com"),
                     Contact = new OpenApiContact() { Name = "Cagdas Korkut", Email = "cagdas@cagdaskorkut.com" }
                 });
-                
+
                 var scheme = new OpenApiSecurityScheme()
                 {
                     Description = "JWT Authorization header using the bearer scheme",

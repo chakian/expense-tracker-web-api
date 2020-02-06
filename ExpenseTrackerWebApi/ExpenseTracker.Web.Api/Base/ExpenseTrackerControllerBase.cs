@@ -13,7 +13,7 @@ namespace ExpenseTracker.Web.Api
             this.logger = logger;
         }
 
-        public ActionResult GetActionResult(IBaseResponse response)
+        protected ActionResult GetActionResult(IBaseResponse response)
         {
             if (response == null)
                 return StatusCode(500);

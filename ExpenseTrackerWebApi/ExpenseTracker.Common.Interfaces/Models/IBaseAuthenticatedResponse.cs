@@ -3,5 +3,6 @@
     public interface IBaseAuthenticatedResponse : IBaseResponse
     {
         string Token { get; set; }
+        string UserId { get; set; }
     }
 }
