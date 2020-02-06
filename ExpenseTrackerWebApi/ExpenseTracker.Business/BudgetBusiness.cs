@@ -23,7 +23,7 @@ namespace ExpenseTracker.Business
         #region Private Methods
         private bool DoesBudgetExistsWithSameNameForUser(string budgetName, string userId)
         {
-            var budgetList = GetBudgetsOfUser(userId);
+            var budgetList = GetActiveBudgetsOfUser(userId);
             return DoesBudgetExistsWithSameName(budgetList, budgetName);
         }
 
@@ -155,6 +155,16 @@ namespace ExpenseTracker.Business
                 response.AddError(ErrorCodes.BUDGET_DOESNT_BELONG_TO_MODIFYING_USER);
                 return response;
             }
+
+            var budgetUser = dbContext.BudgetUsers.Single(bu => bu.IsActive && bu.BudgetId == request.BudgetId && bu.UserId == request.UserId);
+            if (!budgetUser.IsAdmin)
+            {
+                response.AddError(ErrorCodes.BUDGET_USER_IS_NOT_AUTHORIZED_TO_DELETE_BUDGET);
+                return response;
+            }
+
+            dbContext.Budgets.Remove(budget);
+            await dbContext.SaveChangesAsync();
 
             return response;
         }

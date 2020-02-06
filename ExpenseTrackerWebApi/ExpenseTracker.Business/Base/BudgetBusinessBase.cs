@@ -16,7 +16,11 @@ namespace ExpenseTracker.Business.Base
             this.dbContext = dbContext;
         }
 
-        protected List<Budget> GetBudgetsOfUser(string userId) =>
+        protected List<Budget> GetAllBudgetsOfUser(string userId) =>
+            dbContext.Budgets.Where(b => b.BudgetUsers.Any(bu => bu.IsActive && bu.UserId.Equals(userId)))
+                .Include(b => b.Currency)
+                .ToList();
+        protected List<Budget> GetActiveBudgetsOfUser(string userId) =>
             dbContext.Budgets.Where(b => b.IsActive && b.BudgetUsers.Any(bu => bu.IsActive && bu.UserId.Equals(userId)))
                 .Include(b => b.Currency)
                 .ToList();
