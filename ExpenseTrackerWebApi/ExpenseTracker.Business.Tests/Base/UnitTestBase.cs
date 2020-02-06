@@ -16,7 +16,7 @@ namespace ExpenseTracker.Business.Tests
 
         public UnitTestBase(ITestOutputHelper testOutputHelper)
         {
-            var builder = new DbContextOptionsBuilder<ExpenseTrackerContext>();
+            var builder = new DbContextOptionsBuilder<ExpenseTrackerContext>().EnableSensitiveDataLogging();
 
             var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
             var connectionString = connectionStringBuilder.ToString();

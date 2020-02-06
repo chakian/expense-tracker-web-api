@@ -50,7 +50,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             // Act
             var response = userInternalTokenBusiness.WriteToken("differenttoken", "testuser", "1.1.1.1", "device", DateTime.UtcNow);
 
-            var oldToken = DbContext.UserInternalTokens.Single(q => q.Id == "newToken");
+            var oldToken = DbContext.UserInternalTokens.Single(q => q.TokenString == "newToken");
 
             // Assert
             AssertSuccessCase(response);
@@ -63,7 +63,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             // Arrange
             DbContext.UserInternalTokens.Add(new Persistence.Context.DbModels.UserInternalToken()
             {
-                Id = "newToken",
+                TokenString = "newToken",
                 CreatingIp = "1.1.1.1",
                 Issuer = jwtOptions.Value.Issuer,
                 IsValid = true,
@@ -79,7 +79,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             // Act
             var response = userInternalTokenBusiness.WriteToken("", "testuser", "1.1.1.1", "device", DateTime.UtcNow);
 
-            var oldToken = DbContext.UserInternalTokens.Single(q => q.Id == "newToken");
+            var oldToken = DbContext.UserInternalTokens.Single(q => q.TokenString == "newToken");
 
             // Assert
             AssertSingleErrorCase(response, ErrorCodes.TOKEN_EMPTY);
@@ -93,7 +93,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             DateTime initialValidTo = DateTime.UtcNow.AddDays(jwtOptions.Value.ValidDays);
             DbContext.UserInternalTokens.Add(new Persistence.Context.DbModels.UserInternalToken()
             {
-                Id = "newToken",
+                TokenString = "newToken",
                 CreatingIp = "1.1.1.1",
                 Issuer = "issuer",
                 IsValid = true,
@@ -110,7 +110,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             Thread.Sleep(1000);
             var response = userInternalTokenBusiness.WriteToken("newToken", "testuser", "1.1.1.1", "device", DateTime.UtcNow);
 
-            var token = DbContext.UserInternalTokens.Single(q => q.Id == "newToken");
+            var token = DbContext.UserInternalTokens.Single(q => q.TokenString == "newToken");
 
             // Assert
             AssertSuccessCase(response);
@@ -126,7 +126,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             // Act
             userInternalTokenBusiness.WriteToken("newToken", "testuser", "1.1.1.1", "device", DateTime.UtcNow);
 
-            var actual = DbContext.UserInternalTokens.Single(q => q.Id == "newToken");
+            var actual = DbContext.UserInternalTokens.Single(q => q.TokenString == "newToken");
 
             // Assert
             Assert.NotNull(actual);
@@ -177,7 +177,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             // Arrange
             DbContext.UserInternalTokens.Add(new Persistence.Context.DbModels.UserInternalToken()
             {
-                Id = "newToken",
+                TokenString = "newToken",
                 CreatingIp = "1.1.1.1",
                 Issuer = "issuer",
                 IsValid = true,
@@ -203,7 +203,7 @@ namespace ExpenseTracker.Business.Tests.UserTests
             // Arrange
             DbContext.UserInternalTokens.Add(new Persistence.Context.DbModels.UserInternalToken()
             {
-                Id = "newToken",
+                TokenString = "newToken",
                 CreatingIp = "1.1.1.1",
                 Issuer = "issuer",
                 IsValid = true,
