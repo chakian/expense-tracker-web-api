@@ -22,6 +22,7 @@ namespace ExpenseTracker.UOW.Bootstrap
         {
             services.AddScoped<IUserBusiness, UserBusiness>();
             services.AddScoped<IUserInternalTokenBusiness, UserInternalTokenBusiness>();
+            services.AddScoped<IBudgetBusiness, BudgetBusiness>();
         }
     }
 }
