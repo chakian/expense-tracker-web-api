@@ -8,8 +8,4 @@
     <ProjectReference Include="..\ExpenseTracker.Business\ExpenseTracker.Business.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="BudgetWorks\" />
-  </ItemGroup>
-
 </Project>

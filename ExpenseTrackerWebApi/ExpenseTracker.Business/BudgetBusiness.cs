@@ -211,6 +211,6 @@ namespace ExpenseTracker.Business
             return response;
         }
 
-        public async Task<CreateBudgetUserResponse> CreateBudgetUser(CreateBudgetUserRequest request) => throw new NotImplementedException();
+        //public async Task<CreateBudgetUserResponse> CreateBudgetUser(CreateBudgetUserRequest request) => throw new NotImplementedException();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ExpenseTracker.Business.Interfaces;
 using ExpenseTracker.Common.Constants;
+using ExpenseTracker.Common.Utils;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
@@ -11,11 +12,11 @@ namespace ExpenseTracker.Business.Tests.UserTests
 {
     public class TokenTests : UnitTestBase
     {
-        readonly IOptions<Options.JwtOptions> jwtOptions;
+        readonly IOptions<JwtOptions> jwtOptions;
 
         public TokenTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
-            jwtOptions = Microsoft.Extensions.Options.Options.Create(new Options.JwtOptions() { Secret = "test123456test123456test123456", Issuer = "issuer", ValidDays = 10 });
+            jwtOptions = Options.Create(new JwtOptions() { Secret = "test123456test123456test123456", Issuer = "issuer", ValidDays = 10 });
         }
 
         private UserInternalTokenBusiness getUserInternalTokenBusiness()

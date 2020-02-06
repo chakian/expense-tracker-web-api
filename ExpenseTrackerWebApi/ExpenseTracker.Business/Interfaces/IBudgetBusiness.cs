@@ -10,6 +10,6 @@ namespace ExpenseTracker.Business.Interfaces
         Task<UpdateBudgetResponse> UpdateBudget(UpdateBudgetRequest request);
         Task<DeleteBudgetResponse> DeleteBudget(DeleteBudgetRequest request);
         Task<GetBudgetsResponse> GetBudgets(GetBudgetsRequest request);
-        Task<CreateBudgetUserResponse> CreateBudgetUser(CreateBudgetUserRequest request);
+        //Task<CreateBudgetUserResponse> CreateBudgetUser(CreateBudgetUserRequest request);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ExpenseTracker.Business.Options
+﻿namespace ExpenseTracker.Common.Utils
 {
     public class JwtOptions
     {
