@@ -28,4 +28,13 @@
     <ProjectReference Include="..\ExpenseTracker.UOW\ExpenseTracker.UOW.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="app.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Dockerfile">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
