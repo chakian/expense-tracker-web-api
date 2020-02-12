@@ -8,6 +8,8 @@ import (
 	"math/rand"
 	"strconv"
 
+	"fmt"
+
 	"github.com/gorilla/mux"
 )
 
@@ -27,13 +29,15 @@ func getTransactions(w http.ResponseWriter, r *http.Request) {
 
 func getTransaction(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+
 	params := mux.Vars(r)
-	for _, item := range transactions {
+
+	for index, item := range transactions {
+		fmt.Printf(item.ID)
 		if item.ID == params["id"] {
-			json.NewEncoder(w).Encode(item)
+			json.NewEncoder(w).Encode(&transactions[index])
 			break
 		}
-		return
 	}
 }
 
