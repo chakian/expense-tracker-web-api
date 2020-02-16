@@ -24,7 +24,7 @@ type User struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Username string `json:"username"`
-	Token    string `gorm:"-",json:"token"`
+	Token    string `json:"token" gorm:"-"`
 }
 
 //Validate incoming user details...
