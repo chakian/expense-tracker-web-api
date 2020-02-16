@@ -1,12 +1,12 @@
 package models
 
 import (
-	"database/sql"
 	"os"
 
 	u "expense-tracker-web-api/utils"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -20,64 +20,38 @@ type Token struct {
 
 //User ... A struct to represent user account
 type User struct {
-	//gorm.Model
 	ID       uint   `json:"id"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Username string `json:"username"`
-	Token    string `json:"token";sql:"-"`
+	Token    string `gorm:"-",json:"token"`
 }
 
 //Validate incoming user details...
 func (user *User) Validate() (map[string]interface{}, bool) {
 
-	// if !strings.Contains(user.Email, "@") {
-	// 	return u.Message(false, "Email address is required"), false
-	// }
+	if !u.ValidateEmail(user.Email) {
+		return u.Message(false, "Invalid email address"), false
+	}
 
 	if len(user.Password) < 6 {
-		return u.Message(false, "Password is required"), false
+		return u.Message(false, "Password is shorter than 6 characters"), false
 	}
 
 	//Email must be unique
 	temp := &User{}
 
-	db, err := sql.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/expense_tracker")
-	if err != nil {
-		panic(err.Error())
+	// check for errors and duplicate emails
+	err := GetDB().Table("users").Where("email = ? or username = ?", user.Email, user.Username).First(temp).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return u.Message(false, "Connection error. Please retry"), false
 	}
-	defer db.Close()
-
-	result, err := db.Query("SELECT id, email, username, password FROM users WHERE email = ? OR username = ?", temp.Email, temp.Username)
-	if err != nil {
-		panic(err.Error())
-	}
-	defer result.Close()
-
-	var existingUser User
-	for result.Next() {
-		err := result.Scan(&existingUser.ID, &existingUser.Email, &existingUser.Username, &existingUser.Password)
-		if err != nil {
-			panic(err.Error())
-		}
-	}
-
-	if existingUser.Email == temp.Email {
+	if user.Email == temp.Email {
 		return u.Message(false, "Email address already in use by another user."), false
 	}
-
-	if existingUser.Username == temp.Username {
+	if user.Username == temp.Username {
 		return u.Message(false, "Username already in use by another user."), false
 	}
-
-	// //check for errors and duplicate emails
-	// err := GetDB().Table("accounts").Where("email = ?", account.Email).First(temp).Error
-	// if err != nil && err != gorm.ErrRecordNotFound {
-	// 	return u.Message(false, "Connection error. Please retry"), false
-	// }
-	// if temp.Email != "" {
-	// 	return u.Message(false, "Email address already in use by another user."), false
-	// }
 
 	return u.Message(false, "Requirement passed"), true
 }
@@ -92,27 +66,11 @@ func (user *User) Create() map[string]interface{} {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	user.Password = string(hashedPassword)
 
-	db, err := sql.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/expense_tracker")
-	if err != nil {
-		panic(err.Error())
+	GetDB().Create(user)
+
+	if user.ID <= 0 {
+		return u.Message(false, "Failed to create user, connection error.")
 	}
-	defer db.Close()
-
-	stmt, err := db.Prepare("INSERT INTO users(email, username, password) VALUES(?,?,?)")
-	if err != nil {
-		panic(err.Error())
-	}
-
-	_, err = stmt.Exec(user.Email, user.Username, user.Password)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	// GetDB().Create(account)
-
-	// if account.ID <= 0 {
-	// 	return u.Message(false, "Failed to create account, connection error.")
-	// }
 
 	//Create new JWT token for the newly registered account
 	tk := &Token{UserID: user.ID}
@@ -122,7 +80,7 @@ func (user *User) Create() map[string]interface{} {
 
 	user.Password = "" //delete password
 
-	response := u.Message(true, "Account has been created")
+	response := u.Message(true, "User account has been created")
 	response["user"] = user
 	return response
 }

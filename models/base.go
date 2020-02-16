@@ -1,18 +1,14 @@
 package models
 
 import (
-	"database/sql"
-
 	"fmt"
 
 	_ "github.com/go-sql-driver/mysql" //we do the db operations here
+	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
-	//"github.com/jinzhu/gorm"
-	//"github.com/joho/godotenv"
 )
 
-//var db *gorm.DB //database
-var db *sql.DB //database
+var db *gorm.DB //database
 
 func init() {
 
@@ -34,23 +30,17 @@ func init() {
 	fmt.Println(dbURI)
 
 	//db, err := sql.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/expense_tracker")
-	db, err := sql.Open("mysql", dbURI)
+
+	conn, err := gorm.Open("mysql", dbURI)
 	if err != nil {
-		panic(err.Error())
+		fmt.Print(err)
 	}
-	defer db.Close()
 
-	//conn, err := gorm.Open("postgres", dbURI)
-	//if err != nil {
-	//	fmt.Print(err)
-	//}
-
-	//db = conn
-	//db.Debug().AutoMigrate(&Account{}, &Contact{}) //Database migration
+	db = conn
+	db.Debug() //.AutoMigrate(&Account{}, &Contact{}) //Database migration
 }
 
 // GetDB ... returns a handle to the DB object
-// func GetDB() *gorm.DB {
-func GetDB() *sql.DB {
+func GetDB() *gorm.DB {
 	return db
 }
