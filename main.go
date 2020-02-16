@@ -1,13 +1,7 @@
 package main
 
 import (
-	"io/ioutil"
 	"net/http"
-
-	"encoding/json"
-
-	"math/rand"
-	"strconv"
 
 	"fmt"
 
@@ -18,89 +12,13 @@ import (
 	"os"
 	"time"
 
-	"database/sql"
-
-	_ "github.com/go-sql-driver/mysql"
+	"expense-tracker-web-api/app"
+	"expense-tracker-web-api/controllers"
 )
 
 var startupTime time.Time
 
-// Transaction ... Yes
-type Transaction struct {
-	ID       string `json:"id"`
-	Title    string `json:"title"`
-	Category string `json:"category"`
-}
-
-// User ...
-type User struct {
-	ID       int    `json:"id"`
-	Email    string `json:"email"`
-	Username string `json:"username"`
-	password string
-}
-
-var db *sql.DB
 var err error
-
-var transactions []Transaction
-
-func getTransactions(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(transactions)
-}
-
-func getTransaction(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	params := mux.Vars(r)
-
-	for index, item := range transactions {
-		fmt.Printf(item.ID)
-		if item.ID == params["id"] {
-			json.NewEncoder(w).Encode(&transactions[index])
-			break
-		}
-	}
-}
-
-func addTransaction(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	var transaction Transaction
-	_ = json.NewDecoder(r.Body).Decode(&transaction)
-	transaction.ID = strconv.Itoa(rand.Intn(1000000))
-	transactions = append(transactions, transaction)
-	json.NewEncoder(w).Encode(&transaction)
-}
-
-func updateTransaction(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(r)
-	for index, item := range transactions {
-		if item.ID == params["id"] {
-			transactions = append(transactions[:index], transactions[index+1:]...)
-			var transaction Transaction
-			_ = json.NewDecoder(r.Body).Decode(&transaction)
-			transaction.ID = params["id"]
-			transactions = append(transactions, transaction)
-			json.NewEncoder(w).Encode(&transaction)
-			return
-		}
-	}
-	json.NewEncoder(w).Encode(transactions)
-}
-
-func deleteTransaction(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(r)
-	for index, item := range transactions {
-		if item.ID == params["id"] {
-			transactions = append(transactions[:index], transactions[index+1:]...)
-			break
-		}
-	}
-	json.NewEncoder(w).Encode(transactions)
-}
 
 func main() {
 
@@ -109,9 +27,7 @@ func main() {
 	}
 
 	router := mux.NewRouter()
-
-	transactions = append(transactions, Transaction{ID: "1", Title: "Sigara", Category: "Deneme"})
-	transactions = append(transactions, Transaction{ID: "2", Title: "Roberts", Category: "Cafe"})
+	router.Use(app.JwtAuthentication)
 
 	// Log when an appengine warmup request is used to create the new instance.
 	// Warmup steps are taken in setup for consistency with "cold start" instances.
@@ -120,20 +36,20 @@ func main() {
 	})
 	router.HandleFunc("/", indexHandler)
 
-	router.HandleFunc("/transactions", getTransactions).Methods("GET")
-	router.HandleFunc("/transactions", addTransaction).Methods("POST")
-	router.HandleFunc("/transactions/{id}", getTransaction).Methods("GET")
-	router.HandleFunc("/transactions/{id}", updateTransaction).Methods("PUT")
-	router.HandleFunc("/transactions/{id}", deleteTransaction).Methods("DELETE")
+	apiv1 := router.PathPrefix("/api/v1").Subrouter()
+	apiv1.HandleFunc("/", indexV1Handler).Methods("GET")
 
-	router.HandleFunc("/register", registerUser).Methods("POST")
-	router.HandleFunc("/listUsers", listUsers).Methods("GET")
-	router.HandleFunc("/user/{id}", getUser).Methods("GET")
-	router.HandleFunc("/user/{id}", updateUser).Methods("PUT")
-	router.HandleFunc("/user/{id}", deleteUser).Methods("DELETE")
+	apiv1.HandleFunc("/user/new", controllers.CreateUser).Methods("POST")
+	// router.HandleFunc("/user/login", registerUser).Methods("POST")
 
-	apiTest := router.PathPrefix("/api/vTest").Subrouter()
-	apiTest.HandleFunc("/testParams/{someID}", testParams).Methods("GET")
+	// router.HandleFunc("/register", registerUser).Methods("POST")
+	// router.HandleFunc("/listUsers", listUsers).Methods("GET")
+	// router.HandleFunc("/user/{id}", getUser).Methods("GET")
+	// router.HandleFunc("/user/{id}", updateUser).Methods("PUT")
+	// router.HandleFunc("/user/{id}", deleteUser).Methods("DELETE")
+
+	// apiTest := router.PathPrefix("/api/vTest").Subrouter()
+	// apiTest.HandleFunc("/testParams/{someID}", testParams).Methods("GET")
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -147,7 +63,7 @@ func main() {
 	}
 }
 
-func testParams(w http.ResponseWriter, r *http.Request) {
+/* func testParams(w http.ResponseWriter, r *http.Request) {
 	pathParams := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json")
 
@@ -166,7 +82,7 @@ func testParams(w http.ResponseWriter, r *http.Request) {
 	location := query.Get("location")
 
 	w.Write([]byte(fmt.Sprintf(`{"someID": %d, "location": "%s" }`, someID, location)))
-}
+} */
 
 // setup executes per-instance one-time warmup and initialization actions.
 func setup(ctx context.Context) error {
@@ -186,7 +102,16 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello, World! Uptime: %.2fs\n", uptime)
 }
 
-func registerUser(w http.ResponseWriter, r *http.Request) {
+func indexV1Handler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/api/v1/" {
+		http.NotFound(w, r)
+		return
+	}
+	uptime := time.Since(startupTime).Seconds()
+	fmt.Fprintf(w, "API Version 1. Uptime: %.2fs\n", uptime)
+}
+
+/* func registerUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	db, err := sql.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/expense_tracker")
@@ -331,4 +256,4 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintf(w, "User with ID = %s is deleted", params["id"])
-}
+} */
