@@ -5,6 +5,8 @@ instance_class: F1
 inbound_services:
 - warmup
 
+main: ./src
+
 automatic_scaling:
   max_instances: 1 #between 0 and 2147483647, where zero disables the setting
   min_instances: 0 #Specify a value from 0 to 1000. You can set the parameter to the value 0 to allow scaling to 0 instances to lower costs when no requests are being served
