@@ -120,15 +120,15 @@ func Login(email, password string) map[string]interface{} {
 	return resp
 }
 
-// GetUser ...
-func GetUser(u uint) *User {
+// // GetUser ...
+// func GetUser(u uint) *User {
 
-	user := &User{}
-	GetDB().Table("user").Where("id = ?", u).First(user)
-	if user.Email == "" { //User not found!
-		return nil
-	}
+// 	user := &User{}
+// 	GetDB().Table("user").Where("id = ?", u).First(user)
+// 	if user.Email == "" { //User not found!
+// 		return nil
+// 	}
 
-	user.Password = ""
-	return user
-}
+// 	user.Password = ""
+// 	return user
+// }
