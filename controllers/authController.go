@@ -21,7 +21,8 @@ var CreateUser = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-/* var Authenticate = func(w http.ResponseWriter, r *http.Request) {
+// Authenticate ...
+var Authenticate = func(w http.ResponseWriter, r *http.Request) {
 
 	user := &models.User{}
 	err := json.NewDecoder(r.Body).Decode(user) //decode the request body into struct and failed if any error occur
@@ -32,4 +33,4 @@ var CreateUser = func(w http.ResponseWriter, r *http.Request) {
 
 	resp := models.Login(user.Email, user.Password)
 	u.Respond(w, resp)
-} */
+}

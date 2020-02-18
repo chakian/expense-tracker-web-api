@@ -40,7 +40,7 @@ func main() {
 	apiv1.HandleFunc("/", indexV1Handler).Methods("GET")
 
 	apiv1.HandleFunc("/user/new", controllers.CreateUser).Methods("POST")
-	// router.HandleFunc("/user/login", registerUser).Methods("POST")
+	apiv1.HandleFunc("/user/login", controllers.Authenticate).Methods("POST")
 
 	// router.HandleFunc("/register", registerUser).Methods("POST")
 	// router.HandleFunc("/listUsers", listUsers).Methods("GET")
@@ -92,7 +92,6 @@ func setup(ctx context.Context) error {
 	return nil
 }
 
-// indexHandler responds to requests with our greeting.
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)

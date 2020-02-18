@@ -2,13 +2,14 @@ package models
 
 import (
 	"fmt"
+	"os"
 
-	_ "github.com/go-sql-driver/mysql" //we do the db operations here
+	_ "github.com/go-sql-driver/mysql" //we do the db operations in this package. This comment is mandatory for lint
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
 )
 
-var db *gorm.DB //database
+var db *gorm.DB
 
 func init() {
 
@@ -17,21 +18,15 @@ func init() {
 		fmt.Print(e)
 	}
 
-	// username := os.Getenv("db_user")
-	// password := os.Getenv("db_pass")
-	// dbName := os.Getenv("db_name")
-	// dbHost := os.Getenv("db_host")
-	username := "root"
-	password := "123456"
-	dbName := "expense_tracker"
-	dbHost := "127.0.0.1"
+	dbType := os.Getenv("db_type")
+	username := os.Getenv("db_user")
+	password := os.Getenv("db_pass")
+	dbName := os.Getenv("db_name")
+	dbHost := os.Getenv("db_host")
+	dbPort := os.Getenv("db_port")
+	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", username, password, dbHost, dbPort, dbName) //Build connection string
 
-	dbURI := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s", username, password, dbHost, dbName) //Build connection string
-	fmt.Println(dbURI)
-
-	//db, err := sql.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/expense_tracker")
-
-	conn, err := gorm.Open("mysql", dbURI)
+	conn, err := gorm.Open(dbType, dbURI)
 	if err != nil {
 		fmt.Print(err)
 	}

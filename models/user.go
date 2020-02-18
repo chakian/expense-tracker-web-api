@@ -2,6 +2,7 @@ package models
 
 import (
 	"os"
+	"time"
 
 	u "expense-tracker-web-api/utils"
 
@@ -10,21 +11,27 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+//User ... A struct to represent user account
+type User struct {
+	ID           uint      `json:"user_id" gorm:"primary_key;column:user_id"`
+	Email        string    `json:"email"`
+	Password     string    `json:"password"`
+	Name         string    `json:"name" gorm:"column:user_name"`
+	RegisterDate time.Time `json:"-" gorm:"column:register_date"`
+	Token        string    `json:"token" gorm:"-"`
+}
+
+// TableName ...
+func (User) TableName() string {
+	return "user"
+}
+
 /*
 Token ... JWT claims struct
 */
 type Token struct {
 	UserID uint
 	jwt.StandardClaims
-}
-
-//User ... A struct to represent user account
-type User struct {
-	ID       uint   `json:"id"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Username string `json:"username"`
-	Token    string `json:"token" gorm:"-"`
 }
 
 //Validate incoming user details...
@@ -42,15 +49,12 @@ func (user *User) Validate() (map[string]interface{}, bool) {
 	temp := &User{}
 
 	// check for errors and duplicate emails
-	err := GetDB().Table("users").Where("email = ? or username = ?", user.Email, user.Username).First(temp).Error
+	err := GetDB().Table("user").Where("email = ?", user.Email).First(temp).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return u.Message(false, "Connection error. Please retry"), false
 	}
 	if user.Email == temp.Email {
 		return u.Message(false, "Email address already in use by another user."), false
-	}
-	if user.Username == temp.Username {
-		return u.Message(false, "Username already in use by another user."), false
 	}
 
 	return u.Message(false, "Requirement passed"), true
@@ -65,6 +69,7 @@ func (user *User) Create() map[string]interface{} {
 
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	user.Password = string(hashedPassword)
+	user.RegisterDate = time.Now().UTC()
 
 	GetDB().Create(user)
 
@@ -85,10 +90,11 @@ func (user *User) Create() map[string]interface{} {
 	return response
 }
 
-/* func Login(email, password string) map[string]interface{} {
+// Login ...
+func Login(email, password string) map[string]interface{} {
 
-	account := &Account{}
-	err := GetDB().Table("accounts").Where("email = ?", email).First(account).Error
+	user := &User{}
+	err := GetDB().Table("user").Where("email = ?", email).First(user).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return u.Message(false, "Email address not found")
@@ -96,33 +102,33 @@ func (user *User) Create() map[string]interface{} {
 		return u.Message(false, "Connection error. Please retry")
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(account.Password), []byte(password))
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword { //Password does not match!
 		return u.Message(false, "Invalid login credentials. Please try again")
 	}
 	//Worked! Logged In
-	account.Password = ""
+	user.Password = ""
 
 	//Create JWT token
-	tk := &Token{UserId: account.ID}
+	tk := &Token{UserID: user.ID}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
-	account.Token = tokenString //Store the token in the response
+	user.Token = tokenString //Store the token in the response
 
 	resp := u.Message(true, "Logged In")
-	resp["account"] = account
+	resp["user"] = user
 	return resp
 }
 
-func GetUser(u uint) *Account {
+// GetUser ...
+func GetUser(u uint) *User {
 
-	acc := &Account{}
-	GetDB().Table("accounts").Where("id = ?", u).First(acc)
-	if acc.Email == "" { //User not found!
+	user := &User{}
+	GetDB().Table("user").Where("id = ?", u).First(user)
+	if user.Email == "" { //User not found!
 		return nil
 	}
 
-	acc.Password = ""
-	return acc
+	user.Password = ""
+	return user
 }
-*/
