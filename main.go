@@ -39,6 +39,9 @@ func main() {
 	apiv1 := router.PathPrefix("/api/v1").Subrouter()
 	registerRoutesForAPIV1(apiv1)
 
+	apiv1Admin := router.PathPrefix("/api/v1/admin").Subrouter()
+	registerRoutesForAPIV1Admin(apiv1Admin)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8000"
@@ -57,11 +60,17 @@ func registerRoutesForAPIV1(api *mux.Router) {
 	api.HandleFunc("/user/new", controllers.CreateUser).Methods("POST")
 	api.HandleFunc("/user/login", controllers.Authenticate).Methods("POST")
 	// api.HandleFunc("/user/{id}/changepassword", controllers.ChangePassword).Methods("PUT")
+	// api.HandleFunc("/user/{id}", controllers.UpdateUser).Methods("PUT")
 
-	// router.HandleFunc("/register", registerUser).Methods("POST")
-	// router.HandleFunc("/listUsers", listUsers).Methods("GET")
-	// router.HandleFunc("/user/{id}", getUser).Methods("GET")
-	// router.HandleFunc("/user/{id}", deleteUser).Methods("DELETE")
+	api.HandleFunc("/budget", controllers.CreateBudget).Methods("POST")
+	// api.HandleFunc("/budget", controllers.GetBudgets).Methods("GET")
+	// api.HandleFunc("/budget/{id}", controllers.GetBudget).Methods("GET")
+	// api.HandleFunc("/budget/{id}", controllers.UpdateBudget).Methods("PUT")
+	// api.HandleFunc("/budget/{id}", controllers.DeleteBudget).Methods("DELETE")
+}
+
+func registerRoutesForAPIV1Admin(api *mux.Router) {
+	api.HandleFunc("/", indexV1Handler).Methods("GET") // TODO: Change Handler
 }
 
 func setup(ctx context.Context) error {

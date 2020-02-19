@@ -32,6 +32,7 @@ func init() {
 	}
 
 	db = conn
+	db.LogMode(true)
 	db.Debug() //.AutoMigrate(&Account{}, &Contact{}) //Database migration
 }
 
