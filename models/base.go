@@ -58,25 +58,25 @@ func init() {
 
 func getDBURI() string {
 	// LOCAL
-	// username := os.Getenv("DB_USER")
-	// password := os.Getenv("DB_PASS")
-	// dbNameLocal := os.Getenv("DB_NAME")
-	// dbHost := os.Getenv("db_host")
-	// dbPort := os.Getenv("db_port")
-	// dbURI := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", username, password, dbHost, dbPort, dbNameLocal)
+	username := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASS")
+	dbNameLocal := os.Getenv("DB_NAME")
+	dbHost := os.Getenv("db_host")
+	dbPort := os.Getenv("db_port")
+	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", username, password, dbHost, dbPort, dbNameLocal)
 
 	// GCP TEST
-	var (
-		dbUser                 = os.Getenv("DB_USER")
-		dbPwd                  = os.Getenv("DB_PASS")
-		instanceConnectionName = os.Getenv("INSTANCE_CONNECTION_NAME")
-		dbName                 = os.Getenv("DB_NAME")
-	)
-	dbURI := fmt.Sprintf("%s:%s@unix(/cloudsql/%s)/%s?parseTime=true", dbUser, dbPwd, instanceConnectionName, dbName)
+	// var (
+	// 	dbUser                 = os.Getenv("DB_USER")
+	// 	dbPwd                  = os.Getenv("DB_PASS")
+	// 	instanceConnectionName = os.Getenv("INSTANCE_CONNECTION_NAME")
+	// 	dbName                 = os.Getenv("DB_NAME")
+	// )
+	// dbURI := fmt.Sprintf("%s:%s@unix(/cloudsql/%s)/%s?parseTime=true", dbUser, dbPwd, instanceConnectionName, dbName)
 
 	// GCP PROD
 
-	fmt.Printf("DBString: '%s", dbURI)
+	fmt.Printf("DBString: '%s\n\n", dbURI)
 	return dbURI
 }
 
