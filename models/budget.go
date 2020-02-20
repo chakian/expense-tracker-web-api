@@ -3,18 +3,13 @@ package models
 import (
 	u "expense-tracker-web-api/utils"
 	"fmt"
-	"time"
 )
 
 // Budget ...
 type Budget struct {
-	BudgetID     uint       `json:"budget_id" gorm:"primary_key;column:budget_id"`
-	BudgetName   string     `json:"budget_name" gorm:"column:budget_name"`
-	ActiveFlag   uint       `json:"active_flag" gorm:"column:active_flag"`
-	InsertUserID uint       `json:"insert_user_id" gorm:"column:insert_user_id"`
-	InsertTime   time.Time  `json:"insert_time" gorm:"column:insert_time"`
-	UpdateUserID *uint      `json:"update_user_id" gorm:"column:update_user_id"`
-	UpdateTime   *time.Time `json:"update_time" gorm:"column:update_time"`
+	BaseAuditableModel
+	BudgetID   uint   `json:"budget_id" gorm:"primary_key;column:budget_id"`
+	BudgetName string `json:"budget_name" gorm:"column:budget_name"`
 }
 
 // TableName ...
@@ -32,15 +27,12 @@ func (budget *Budget) Validate() (map[string]interface{}, bool) {
 }
 
 // Create ...
-func (budget *Budget) Create() map[string]interface{} {
+func (budget *Budget) Create(userid uint) map[string]interface{} {
 	if resp, ok := budget.Validate(); !ok {
 		return resp
 	}
 
-	budget.ActiveFlag = 1
-	budget.InsertTime = time.Now().UTC()
-	budget.UpdateUserID = nil
-	budget.UpdateTime = nil
+	SetAuditValuesForInsert(&budget.BaseAuditableModel, 1, userid)
 
 	GetDB().Create(budget)
 

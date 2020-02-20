@@ -21,8 +21,7 @@ var CreateBudget = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	budget.InsertUserID = user
-	resp := budget.Create()
+	resp := budget.Create(user)
 	u.Respond(w, resp)
 }
 
