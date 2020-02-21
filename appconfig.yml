@@ -10,3 +10,4 @@ database:
   name: "expense_tracker"
   user: "root"
   pass: "123456"
+  instancename: "NA"

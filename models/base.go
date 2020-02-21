@@ -41,13 +41,14 @@ func SetAuditValuesForUpdate(model BaseAuditableModel, isActive uint8, user uint
 var db *gorm.DB
 
 func init() {
+	fmt.Println("started MODELS -> BASE init")
 
-	u.ReadCredentials()
+	// u.ReadCredentials()
 
-	fmt.Println(u.Credentials.DbHost)
-	fmt.Println(u.Credentials.DbName)
-	fmt.Println(u.Credentials.DbUser)
-	fmt.Println(u.Credentials.DbType)
+	// fmt.Println(u.Credentials.DbHost)
+	// fmt.Println(u.Credentials.DbName)
+	// fmt.Println(u.Credentials.DbUser)
+	// fmt.Println(u.Credentials.DbType)
 
 	fmt.Println("initializing db")
 
@@ -64,24 +65,24 @@ func init() {
 
 func getDBURI() string {
 	var (
-		username = u.Credentials.DbUser
-		password = u.Credentials.DbPass
-		dbName   = u.Credentials.DbName
-		dbHost   = u.Credentials.DbHost
-		dbPort   = u.Credentials.DbPort
-		// instanceConnectionName = u.Credentials.InstanceName
+		username               = u.Config.Database.DbUser
+		password               = u.Config.Database.DbPass
+		dbName                 = u.Config.Database.DbName
+		dbHost                 = u.Config.Database.DbHost
+		dbPort                 = u.Config.Database.DbPort
+		instanceConnectionName = u.Config.Database.InstanceName
 	)
-	// fmt.Print(instanceConnectionName)
 
-	// LOCAL
-	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", username, password, dbHost, dbPort, dbName)
+	var dbURI string
 
-	// GCP TEST
-	// dbURI := fmt.Sprintf("%s:%s@unix(/cloudsql/%s)/%s?parseTime=true", dbUser, dbPwd, instanceConnectionName, dbName)
-
-	// GCP PROD
+	if u.Config.Server.Environment == "LOCAL" {
+		dbURI = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", username, password, dbHost, dbPort, dbName)
+	} else {
+		dbURI = fmt.Sprintf("%s:%s@unix(/cloudsql/%s)/%s?parseTime=true", username, password, instanceConnectionName, dbName)
+	}
 
 	fmt.Printf("DBString: '%s\n", dbURI)
+
 	return dbURI
 }
 
