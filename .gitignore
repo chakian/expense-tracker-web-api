@@ -9,10 +9,5 @@
 # More
 [Tt]estReports/
 
-# environment files
-.env
-.env_local
-.env_gcp_test
-
 # credentials
 credentials/

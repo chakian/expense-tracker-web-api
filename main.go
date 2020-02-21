@@ -18,13 +18,8 @@ import (
 
 var startupTime time.Time
 
-var err error
-
 func main() {
-
-	if err := setup(context.Background()); err != nil {
-		log.Fatalf("setup: %v", err)
-	}
+	fmt.Println("Started main")
 
 	router := mux.NewRouter()
 	router.Use(app.JwtAuthentication)

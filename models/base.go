@@ -2,13 +2,15 @@ package models
 
 import (
 	"fmt"
-	"os"
 	"time"
+
+	u "expense-tracker-web-api/utils"
 
 	_ "github.com/go-sql-driver/mysql" //we do the db operations in this package. This comment is mandatory for lint
 	"github.com/jinzhu/gorm"
-	"github.com/joho/godotenv"
 )
+
+// "github.com/joho/godotenv"
 
 // BaseAuditableModel ...
 type BaseAuditableModel struct {
@@ -40,43 +42,46 @@ var db *gorm.DB
 
 func init() {
 
-	e := godotenv.Load() //Load .env file
-	if e != nil {
-		fmt.Print(e)
-	}
+	u.ReadCredentials()
+
+	fmt.Println(u.Credentials.DbHost)
+	fmt.Println(u.Credentials.DbName)
+	fmt.Println(u.Credentials.DbUser)
+	fmt.Println(u.Credentials.DbType)
+
+	fmt.Println("initializing db")
 
 	dbURI := getDBURI()
 	conn, err := gorm.Open("mysql", dbURI)
-	if err != nil {
-		fmt.Print(err)
-	}
+	u.CheckAndLog(err)
 
 	db = conn
 	db.LogMode(true)
 	db.Debug() //.AutoMigrate(&Account{}, &Contact{}) //Database migration
+
+	fmt.Println("db initialization completed")
 }
 
 func getDBURI() string {
+	var (
+		username = u.Credentials.DbUser
+		password = u.Credentials.DbPass
+		dbName   = u.Credentials.DbName
+		dbHost   = u.Credentials.DbHost
+		dbPort   = u.Credentials.DbPort
+		// instanceConnectionName = u.Credentials.InstanceName
+	)
+	// fmt.Print(instanceConnectionName)
+
 	// LOCAL
-	username := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASS")
-	dbNameLocal := os.Getenv("DB_NAME")
-	dbHost := os.Getenv("db_host")
-	dbPort := os.Getenv("db_port")
-	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", username, password, dbHost, dbPort, dbNameLocal)
+	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", username, password, dbHost, dbPort, dbName)
 
 	// GCP TEST
-	// var (
-	// 	dbUser                 = os.Getenv("DB_USER")
-	// 	dbPwd                  = os.Getenv("DB_PASS")
-	// 	instanceConnectionName = os.Getenv("INSTANCE_CONNECTION_NAME")
-	// 	dbName                 = os.Getenv("DB_NAME")
-	// )
 	// dbURI := fmt.Sprintf("%s:%s@unix(/cloudsql/%s)/%s?parseTime=true", dbUser, dbPwd, instanceConnectionName, dbName)
 
 	// GCP PROD
 
-	fmt.Printf("DBString: '%s\n\n", dbURI)
+	fmt.Printf("DBString: '%s\n", dbURI)
 	return dbURI
 }
 
