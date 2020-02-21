@@ -1,0 +1,12 @@
+# Server configurations
+server:
+  environment: "LOCAL"
+  tokensecret: "thisismysupersecretforthetokens"
+
+# Database credentials
+database:
+  host: "127.0.0.1"
+  port: "3306"
+  name: "expense_tracker"
+  user: "root"
+  pass: "123456"
