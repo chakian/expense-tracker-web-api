@@ -32,3 +32,18 @@ func (category *Category) Create(userid uint) map[string]interface{} {
 	resp["category"] = category
 	return resp
 }
+
+// Update ...
+func (category *Category) Update(userid uint) map[string]interface{} {
+	if DoesBudgetBelongToUser(category.BudgetID, userid) == false {
+		return nil
+	}
+
+	SetAuditValuesForUpdate(&category.BaseAuditableModel, 1, userid)
+
+	GetDB().Model(&category).Update(category)
+
+	resp := u.Message(true, "success")
+	resp["category"] = category
+	return resp
+}
