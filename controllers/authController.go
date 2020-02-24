@@ -19,7 +19,7 @@ var CreateUser = func(w http.ResponseWriter, r *http.Request) {
 
 	resp := user.Create() //Create user
 
-	if bool(resp["status"]) == true {
+	if resp["status"] == "true" {
 		userid := user.ID
 		budget := &models.Budget{BudgetName: "Bütçem"}
 		budget.Create(userid)

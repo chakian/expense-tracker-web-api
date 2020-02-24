@@ -78,6 +78,10 @@ func (budget *Budget) Update(userid uint) map[string]interface{} {
 		return resp
 	}
 
+	if DoesBudgetBelongToUser(budget.BudgetID, userid) == false {
+		return nil
+	}
+
 	SetAuditValuesForUpdate(&budget.BaseAuditableModel, 1, userid)
 
 	GetDB().Model(&budget).Update(budget)
