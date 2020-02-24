@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -132,3 +133,21 @@ func Login(email, password string) map[string]interface{} {
 // 	user.Password = ""
 // 	return user
 // }
+
+// SearchUsersByEmail ...
+func SearchUsersByEmail(email string, userid uint) []*User {
+	users := make([]*User, 0)
+
+	//SELECT * FROM budget INNER JOIN budget_user ON budget.budget_id = budget_user.budget_id WHERE budget_user.user_id = 1
+	err := GetDB().Table("user").Where("user.email = ? AND user.active_flag = ?", email, 1).Find(&users).Error
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	for i := range users {
+		users[i].Password = ""
+	}
+
+	return users
+}
