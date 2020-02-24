@@ -9,5 +9,5 @@
 # More
 [Tt]estReports/
 
-# credentials
-credentials/
+# gcp configs
+app_test.yaml
