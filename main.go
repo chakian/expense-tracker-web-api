@@ -65,6 +65,19 @@ func registerRoutesForAPIV1(api *mux.Router) {
 	api.HandleFunc("/budget/{id}", controllers.UpdateBudget).Methods("PUT")
 	// api.HandleFunc("/budget/{id}", controllers.DeleteBudget).Methods("DELETE")
 	api.HandleFunc("/budget/adduser", controllers.AddUserToBudget).Methods("POST")
+	api.HandleFunc("/budgetuser/approve", controllers.ApproveUserForBudget).Methods("PUT")
+
+	// api.HandleFunc("/user/search/mail", controllers.SearchUserByEmail).Methods("GET")
+
+	// api.HandleFunc("/category", controllers.CreateCategory).Methods("POST")
+	// api.HandleFunc("/category", controllers.UpdateCategory).Methods("PUT")
+
+	// api.HandleFunc("/account", controllers.CreateAccount).Methods("POST")
+	// api.HandleFunc("/account", controllers.UpdateAccount).Methods("PUT")
+
+	// api.HandleFunc("/transaction", controllers.CreateTransaction).Methods("POST")
+	// api.HandleFunc("/transaction", controllers.UpdateTransaction).Methods("PUT")
+	// api.HandleFunc("/transaction", controllers.DeleteTransaction).Methods("DELETE")
 }
 
 func registerRoutesForAPIV1Admin(api *mux.Router) {

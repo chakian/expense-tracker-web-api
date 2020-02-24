@@ -49,3 +49,14 @@ func (budgetUser *BudgetUser) AddUserToBudget(auditUserID uint) map[string]inter
 	resp["budgetUser"] = budgetUser
 	return resp
 }
+
+// Update ...
+func (budgetUser *BudgetUser) Update(userid uint) map[string]interface{} {
+	SetAuditValuesForUpdate(&budgetUser.BaseAuditableModel, 1, userid)
+
+	GetDB().Model(&budgetUser).Update(budgetUser)
+
+	resp := u.Message(true, "success")
+	resp["budgetUser"] = budgetUser
+	return resp
+}

@@ -107,3 +107,22 @@ var AddUserToBudget = func(w http.ResponseWriter, r *http.Request) {
 
 	log.Print("Finished: budgetController.AddUserToBudget")
 }
+
+// ApproveUserForBudget ...
+var ApproveUserForBudget = func(w http.ResponseWriter, r *http.Request) {
+	log.Print("Started: budgetController.ApproveUserForBudget")
+
+	budgetUser := &models.BudgetUser{}
+	err := json.NewDecoder(r.Body).Decode(budgetUser)
+	if err != nil {
+		u.Respond(w, u.Message(false, "Error while decoding request body"))
+		return
+	}
+	budgetUser.UserApprovedFlag = 1
+	userid := app.GetUserID(r)
+
+	resp := budgetUser.Update(userid)
+	u.Respond(w, resp)
+
+	log.Print("Finished: budgetController.ApproveUserForBudget")
+}
