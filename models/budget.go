@@ -8,8 +8,9 @@ import (
 // Budget ...
 type Budget struct {
 	BaseAuditableModel
-	BudgetID   uint   `json:"budget_id" gorm:"primary_key;column:budget_id"`
-	BudgetName string `json:"budget_name" gorm:"column:budget_name"`
+	BudgetID   uint         `json:"budget_id" gorm:"primary_key;column:budget_id"`
+	BudgetName string       `json:"budget_name" gorm:"column:budget_name"`
+	Users      []BudgetUser `gorm:"many2many:budget_user;association_foreignkey:budget_id;foreignkey:budget_id"`
 }
 
 // TableName ...
@@ -36,6 +37,12 @@ func (budget *Budget) Create(userid uint) map[string]interface{} {
 
 	GetDB().Create(budget)
 
+	budgetUser := &BudgetUser{UserID: userid, BudgetID: budget.BudgetID, UserApprovedFlag: 1}
+	if budgetUser.Create(userid) == false {
+		resp := u.Message(false, "budget User creation failed")
+		return resp
+	}
+
 	resp := u.Message(true, "success")
 	resp["budget"] = budget
 	return resp
@@ -44,8 +51,8 @@ func (budget *Budget) Create(userid uint) map[string]interface{} {
 // GetBudget ...
 func GetBudget(budgetid uint, userid uint) *Budget {
 	budget := &Budget{}
-	err := GetDB().Table("budget").Where("budget_id = ?", budgetid).First(budget).Error
-	if err != nil {
+	err := GetDB().Table("budget").Where("budget_id = ? AND active_flag = ?", budgetid, 1).First(budget).Error
+	if err != nil || DoesBudgetBelongToUser(budget.BudgetID, userid) == false {
 		return nil
 	}
 	return budget
@@ -54,10 +61,28 @@ func GetBudget(budgetid uint, userid uint) *Budget {
 // GetBudgets ...
 func GetBudgets(userid uint) []*Budget {
 	budgets := make([]*Budget, 0)
-	err := GetDB().Table("budget").Where("insert_user_id = ?", userid).Find(&budgets).Error
+
+	//SELECT * FROM budget INNER JOIN budget_user ON budget.budget_id = budget_user.budget_id WHERE budget_user.user_id = 1
+	err := GetDB().Table("budget").Joins("JOIN budget_user ON budget.budget_id = budget_user.budget_id").Where("budget_user.user_id = ? AND budget.active_flag = ? AND budget_user.active_flag = ? AND budget_user.user_approved_flag = ?", userid, 1, 1, 1).Find(&budgets).Error
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
+
 	return budgets
+}
+
+// Update ...
+func (budget *Budget) Update(userid uint) map[string]interface{} {
+	if resp, ok := budget.Validate(); !ok {
+		return resp
+	}
+
+	SetAuditValuesForUpdate(&budget.BaseAuditableModel, 1, userid)
+
+	GetDB().Model(&budget).Update(budget)
+
+	resp := u.Message(true, "success")
+	resp["budget"] = budget
+	return resp
 }

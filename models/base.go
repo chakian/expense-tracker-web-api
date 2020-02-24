@@ -15,26 +15,26 @@ import (
 
 // BaseAuditableModel ...
 type BaseAuditableModel struct {
-	ActiveFlag   uint8      `json:"active_flag" gorm:"column:active_flag"`
-	InsertUserID uint       `json:"insert_user_id" gorm:"column:insert_user_id"`
-	InsertTime   time.Time  `json:"insert_time" gorm:"column:insert_time"`
-	UpdateUserID *uint      `json:"update_user_id" gorm:"column:update_user_id"`
-	UpdateTime   *time.Time `json:"update_time" gorm:"column:update_time"`
+	ActiveFlag   uint8      `json:"isActive" gorm:"column:active_flag"`
+	InsertUserID uint       `json:"insertUserId" gorm:"column:insert_user_id"`
+	InsertTime   time.Time  `json:"insertTime" gorm:"column:insert_time"`
+	UpdateUserID *uint      `json:"updateUserId" gorm:"column:update_user_id"`
+	UpdateTime   *time.Time `json:"updateTime" gorm:"column:update_time"`
 }
 
 // SetAuditValuesForInsert ...
-func SetAuditValuesForInsert(model *BaseAuditableModel, isActive uint8, user uint) {
+func SetAuditValuesForInsert(model *BaseAuditableModel, isActive uint8, userid uint) {
 	model.ActiveFlag = isActive
-	model.InsertUserID = user
+	model.InsertUserID = userid
 	model.InsertTime = time.Now().UTC()
 	model.UpdateUserID = nil
 	model.UpdateTime = nil
 }
 
 // SetAuditValuesForUpdate ...
-func SetAuditValuesForUpdate(model BaseAuditableModel, isActive uint8, user uint) {
+func SetAuditValuesForUpdate(model *BaseAuditableModel, isActive uint8, userid uint) {
 	model.ActiveFlag = isActive
-	model.UpdateUserID = &user
+	model.UpdateUserID = &userid
 	currentTime := time.Now().UTC()
 	model.UpdateTime = &currentTime
 }
@@ -42,15 +42,6 @@ func SetAuditValuesForUpdate(model BaseAuditableModel, isActive uint8, user uint
 var db *gorm.DB
 
 func init() {
-	fmt.Println("started MODELS -> BASE init")
-
-	// u.ReadCredentials()
-
-	// fmt.Println(u.Credentials.DbHost)
-	// fmt.Println(u.Credentials.DbName)
-	// fmt.Println(u.Credentials.DbUser)
-	// fmt.Println(u.Credentials.DbType)
-
 	fmt.Println("initializing db")
 
 	dbURI := getDBURI()

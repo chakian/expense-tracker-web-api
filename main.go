@@ -21,6 +21,8 @@ var startupTime time.Time
 func main() {
 	fmt.Println("Started main")
 
+	setup(context.Background())
+
 	router := mux.NewRouter()
 	router.Use(app.JwtAuthentication)
 
@@ -59,9 +61,10 @@ func registerRoutesForAPIV1(api *mux.Router) {
 
 	api.HandleFunc("/budget", controllers.CreateBudget).Methods("POST")
 	api.HandleFunc("/budget", controllers.GetBudgetsOfUser).Methods("GET")
-	// api.HandleFunc("/budget/{id}", controllers.GetBudget).Methods("GET")
-	// api.HandleFunc("/budget/{id}", controllers.UpdateBudget).Methods("PUT")
+	api.HandleFunc("/budget/{id}", controllers.GetBudgetByID).Methods("GET")
+	api.HandleFunc("/budget/{id}", controllers.UpdateBudget).Methods("PUT")
 	// api.HandleFunc("/budget/{id}", controllers.DeleteBudget).Methods("DELETE")
+	api.HandleFunc("/budget/adduser", controllers.AddUserToBudget).Methods("POST")
 }
 
 func registerRoutesForAPIV1Admin(api *mux.Router) {
