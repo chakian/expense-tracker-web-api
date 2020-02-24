@@ -68,7 +68,7 @@ func registerRoutesForAPIV1(api *mux.Router) {
 	api.HandleFunc("/budget/adduser", controllers.AddUserToBudget).Methods("POST")
 	api.HandleFunc("/budgetuser/approve", controllers.ApproveUserForBudget).Methods("PUT")
 
-	// api.HandleFunc("/category", controllers.CreateCategory).Methods("POST")
+	api.HandleFunc("/category", controllers.CreateCategory).Methods("POST")
 	// api.HandleFunc("/category", controllers.UpdateCategory).Methods("PUT")
 
 	// api.HandleFunc("/account", controllers.CreateAccount).Methods("POST")

@@ -2,7 +2,6 @@ package models
 
 import (
 	u "expense-tracker-web-api/utils"
-	"fmt"
 )
 
 // BudgetUser ...
@@ -32,7 +31,6 @@ func (budgetUser *BudgetUser) Create(userid uint) bool {
 func DoesBudgetBelongToUser(budgetid uint, userid uint) bool {
 	budgetUser := &BudgetUser{}
 	err := GetDB().Where(&BudgetUser{BudgetID: budgetid, UserID: userid}).Where("active_flag = ? AND budget_user.user_approved_flag = ?", 1, 1).First(budgetUser).Error
-	fmt.Print(budgetUser)
 	if err != nil || budgetUser.BudgetUserID <= 0 {
 		return false
 	}
