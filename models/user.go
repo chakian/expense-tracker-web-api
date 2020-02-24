@@ -13,7 +13,7 @@ import (
 
 //User ... A struct to represent user account
 type User struct {
-	ID           uint      `json:"user_id" gorm:"primary_key;column:user_id"`
+	ID           uint      `json:"userId" gorm:"primary_key;column:user_id"`
 	Email        string    `json:"email"`
 	Password     string    `json:"password"`
 	Name         string    `json:"name" gorm:"column:user_name"`

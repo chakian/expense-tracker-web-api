@@ -8,8 +8,8 @@ import (
 // Budget ...
 type Budget struct {
 	BaseAuditableModel
-	BudgetID   uint         `json:"budget_id" gorm:"primary_key;column:budget_id"`
-	BudgetName string       `json:"budget_name" gorm:"column:budget_name"`
+	BudgetID   uint         `json:"budgetId" gorm:"primary_key;column:budget_id"`
+	BudgetName string       `json:"budgetName" gorm:"column:budget_name"`
 	Users      []BudgetUser `gorm:"many2many:budget_user;association_foreignkey:budget_id;foreignkey:budget_id"`
 }
 
