@@ -2,12 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
+	"expense-tracker-web-api/app"
 	"expense-tracker-web-api/models"
 	u "expense-tracker-web-api/utils"
 	"net/http"
-	"strconv"
-
-	"github.com/gorilla/mux"
 )
 
 // CreateBudget ...
@@ -27,14 +25,10 @@ var CreateBudget = func(w http.ResponseWriter, r *http.Request) {
 
 // GetBudgetsOfUser ...
 var GetBudgetsOfUser = func(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	userid, err := strconv.Atoi(params["user_id"])
-	if err != nil {
-		u.Respond(w, u.Message(false, "there was a problem with 'user_id' parameter"))
-		return
-	}
+	// params := mux.Vars(r)
+	userid := app.GetUserID(r)
 
-	data := models.GetBudgets(uint(userid))
+	data := models.GetBudgets(userid)
 	resp := u.Message(true, "ok")
 	resp["data"] = data
 	u.Respond(w, resp)

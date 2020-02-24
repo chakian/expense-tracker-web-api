@@ -3,21 +3,21 @@ package utils
 import "log"
 
 // CheckAndPanic ...
-func CheckAndPanic(e error) {
+func (e error) CheckAndPanic() {
 	if e != nil {
 		panic(e)
 	}
 }
 
 // CheckAndLogFatal ...
-func CheckAndLogFatal(e error) {
+func (e error) CheckAndLogFatal() {
 	if e != nil {
 		log.Fatal(e)
 	}
 }
 
 // CheckAndLog ...
-func CheckAndLog(e error) {
+func (e error) CheckAndLog() {
 	if e != nil {
 		log.Print(e)
 	}

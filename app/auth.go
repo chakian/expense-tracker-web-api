@@ -11,6 +11,23 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
+type key interface {
+}
+
+// ContextKey ...
+var ContextKey key = "values"
+
+// ContextValues ...
+type ContextValues struct {
+	UserID uint
+}
+
+// GetUserID ...
+func GetUserID(r *http.Request) uint {
+	userid := r.Context().Value(ContextKey).(ContextValues).UserID
+	return userid
+}
+
 /*
 JwtAuthentication ...
 */
@@ -75,7 +92,11 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 
 		//Everything went well, proceed with the request and set the caller to the user retrieved from the parsed token
 		//fmt.Sprintf("User %", tk.Username) //Useful for monitoring
-		ctx := context.WithValue(r.Context(), "user", tk.UserID)
+		v := ContextValues{
+			UserID: tk.UserID,
+		}
+
+		ctx := context.WithValue(r.Context(), ContextKey, v) //nolint
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r) //proceed in the middleware chain!
 	})
