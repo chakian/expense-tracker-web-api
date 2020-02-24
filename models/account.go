@@ -34,16 +34,16 @@ func (account *Account) Create(userid uint) map[string]interface{} {
 }
 
 // Update ...
-// func (account *Account) Update(userid uint) map[string]interface{} {
-// 	if DoesBudgetBelongToUser(account.BudgetID, userid) == false {
-// 		return nil
-// 	}
+func (account *Account) Update(userid uint) map[string]interface{} {
+	if DoesBudgetBelongToUser(account.BudgetID, userid) == false {
+		return nil
+	}
 
-// 	SetAuditValuesForUpdate(&account.BaseAuditableModel, 1, userid)
+	SetAuditValuesForUpdate(&account.BaseAuditableModel, 1, userid)
 
-// 	GetDB().Model(&account).Update(account)
+	GetDB().Model(&account).Update(account)
 
-// 	resp := u.Message(true, "success")
-// 	resp["account"] = account
-// 	return resp
-// }
+	resp := u.Message(true, "success")
+	resp["account"] = account
+	return resp
+}
