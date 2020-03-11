@@ -5,6 +5,7 @@ import (
 
 	"fmt"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 
 	"context"
@@ -26,6 +27,10 @@ func main() {
 	router := mux.NewRouter()
 	router.Use(app.JwtAuthentication)
 
+	header := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+	methods := handlers.AllowedMethods([]string{"GET", "POST", "FETCH", "DELETE", "PUT", "HEAD", "OPTIONS"})
+	origins := handlers.AllowedOrigins([]string{"*"})
+
 	// Log when an appengine warmup request is used to create the new instance.
 	// Warmup steps are taken in setup for consistency with "cold start" instances.
 	router.HandleFunc("/_ah/warmup", func(w http.ResponseWriter, r *http.Request) {
@@ -46,7 +51,7 @@ func main() {
 	}
 
 	log.Printf("Listening on port %s", port)
-	if err := http.ListenAndServe(":"+port, router); err != nil {
+	if err := http.ListenAndServe(":"+port, handlers.CORS(header, methods, origins)(router)); err != nil {
 		log.Fatal(err)
 	}
 }
