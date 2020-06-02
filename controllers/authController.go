@@ -42,7 +42,7 @@ var Authenticate = func(w http.ResponseWriter, r *http.Request) {
 	resp := models.Login(user.Email, user.Password)
 
 	if resp["status"] == false {
-		w.WriteHeader(http.StatusForbidden)
+		w.WriteHeader(http.StatusUnauthorized)
 	}
 
 	u.Respond(w, resp)
