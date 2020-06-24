@@ -2,6 +2,7 @@ package models
 
 import (
 	u "expense-tracker-web-api/utils"
+	"fmt"
 )
 
 // Category ...
@@ -16,6 +17,24 @@ type Category struct {
 // TableName ...
 func (Category) TableName() string {
 	return "budget_category"
+}
+
+// GetCategoryListByBudgetID ...
+func GetCategoryListByBudgetID(budgetid uint, userid uint) []*Category {
+	if DoesBudgetBelongToUser(budgetid, userid) == false {
+		return nil
+	}
+
+	categories := make([]*Category, 0)
+
+	//SELECT * FROM budget INNER JOIN budget_user ON budget.budget_id = budget_user.budget_id WHERE budget_user.user_id = 1
+	err := GetDB().Table("budget_category").Where("active_flag = ? AND budget_id = ? ", 1, budgetid).Find(&categories).Error
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	return categories
 }
 
 // Create ...

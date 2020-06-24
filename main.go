@@ -68,20 +68,23 @@ func registerRoutesForAPIV1(api *mux.Router) {
 	api.HandleFunc("/budget", controllers.CreateBudget).Methods("POST")
 	api.HandleFunc("/budget", controllers.GetBudgetsOfUser).Methods("GET")
 	api.HandleFunc("/budget/{id}", controllers.GetBudgetByID).Methods("GET")
-	api.HandleFunc("/budget/{id}", controllers.UpdateBudget).Methods("PUT")
+	api.HandleFunc("/budget", controllers.UpdateBudget).Methods("PUT")
 	// api.HandleFunc("/budget/{id}", controllers.DeleteBudget).Methods("DELETE")
-	api.HandleFunc("/budget/adduser", controllers.AddUserToBudget).Methods("POST")
-	api.HandleFunc("/budgetuser/approve", controllers.ApproveUserForBudget).Methods("PUT")
+	api.HandleFunc("/budget/user", controllers.AddUserToBudget).Methods("POST")
+	api.HandleFunc("/budget/user/approve", controllers.ApproveUserForBudget).Methods("PUT")
 
+	api.HandleFunc("/category/{budget_id}", controllers.GetCategoriesOfBudget).Methods("GET")
 	api.HandleFunc("/category", controllers.CreateCategory).Methods("POST")
-	api.HandleFunc("/category/{category_id}", controllers.UpdateCategory).Methods("PUT")
+	api.HandleFunc("/category", controllers.UpdateCategory).Methods("PUT")
 
+	api.HandleFunc("/account/{budget_id}", controllers.GetAccountsOfBudget).Methods("GET")
 	api.HandleFunc("/account", controllers.CreateAccount).Methods("POST")
-	api.HandleFunc("/account/{account_id}", controllers.UpdateAccount).Methods("PUT")
+	api.HandleFunc("/account", controllers.UpdateAccount).Methods("PUT")
 
-	// api.HandleFunc("/transaction", controllers.CreateTransaction).Methods("POST")
-	// api.HandleFunc("/transaction", controllers.UpdateTransaction).Methods("PUT")
-	// api.HandleFunc("/transaction", controllers.DeleteTransaction).Methods("DELETE")
+	api.HandleFunc("/transaction", controllers.GetTransactionList).Methods("GET")
+	api.HandleFunc("/transaction", controllers.CreateTransaction).Methods("POST")
+	api.HandleFunc("/transaction", controllers.UpdateTransaction).Methods("PUT")
+	api.HandleFunc("/transaction", controllers.DeleteTransaction).Methods("DELETE")
 }
 
 func registerRoutesForAPIV1Admin(api *mux.Router) {

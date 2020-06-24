@@ -12,6 +12,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// GetAccountsOfBudget ...
+var GetAccountsOfBudget = func(w http.ResponseWriter, r *http.Request) {
+	log.Print("Started: accountController.GetAccountsOfBudget")
+	log.Print("Finished: accountController.GetAccountsOfBudget")
+}
+
 // CreateAccount ...
 var CreateAccount = func(w http.ResponseWriter, r *http.Request) {
 	log.Print("Started: accountController.CreateAccount")

@@ -12,6 +12,28 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// GetCategoriesOfBudget ...
+var GetCategoriesOfBudget = func(w http.ResponseWriter, r *http.Request) {
+	log.Print("Started: categoryController.GetCategoriesOfBudget")
+
+	userid := app.GetUserID(r)
+	log.Print("userid : ", userid)
+
+	params := mux.Vars(r)
+	budgetid, err := strconv.ParseUint(params["budget_id"], 0, 32)
+	if err != nil {
+		u.Respond(w, u.Message(false, "there was a problem with 'budget_id' parameter"))
+		return
+	}
+
+	data := models.GetCategoryListByBudgetID(uint(budgetid), userid)
+	resp := u.Message(true, "ok")
+	resp["data"] = data
+	u.Respond(w, resp)
+
+	log.Print("Finished: categoryController.GetCategoriesOfBudget")
+}
+
 // CreateCategory ...
 var CreateCategory = func(w http.ResponseWriter, r *http.Request) {
 	log.Print("Started: categoryController.CreateCategory")
@@ -35,19 +57,14 @@ var CreateCategory = func(w http.ResponseWriter, r *http.Request) {
 var UpdateCategory = func(w http.ResponseWriter, r *http.Request) {
 	log.Print("Started: categoryController.UpdateCategory")
 
-	params := mux.Vars(r)
 	category := &models.Category{}
 	err := json.NewDecoder(r.Body).Decode(category)
 	if err != nil {
 		u.Respond(w, u.Message(false, "Error while decoding request body"))
 		return
 	}
-	categoryid, err := strconv.ParseUint(params["category_id"], 0, 32)
-	if err != nil {
-		u.Respond(w, u.Message(false, "there was a problem with 'category_id' parameter"))
-		return
-	}
-	category.BudgetCategoryID = uint(categoryid)
+
+	category.BudgetCategoryID = uint(category.BudgetCategoryID)
 	userid := app.GetUserID(r)
 
 	resp := category.Update(userid)
