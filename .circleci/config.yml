@@ -16,8 +16,7 @@ jobs:
     environment:
       TEST_RESULTS: /tmp/test-results
     steps:
-      - checkout:
-        path: /go/src/{{REPO_NAME}}
+      - checkout
 
       # specify any bash command here prefixed with `run: `
       - run: mkdir -p $TEST_RESULTS
