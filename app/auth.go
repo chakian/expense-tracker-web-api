@@ -2,12 +2,11 @@ package app
 
 import (
 	"context"
+	"expense-tracker-web-api/models"
+	u "expense-tracker-web-api/utils"
 	"net/http"
 	"os"
 	"strings"
-
-	"github.com/chakian/expense-tracker-web-api/models"
-	u "github.com/chakian/expense-tracker-web-api/utils"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )

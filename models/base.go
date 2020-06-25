@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	u "github.com/chakian/expense-tracker-web-api/utils"
+	u "expense-tracker-web-api/utils"
 
 	_ "github.com/go-sql-driver/mysql" //we do the db operations in this package. This comment is mandatory for lint
 	"github.com/jinzhu/gorm"

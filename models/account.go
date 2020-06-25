@@ -1,7 +1,7 @@
 package models
 
 import (
-	u "github.com/chakian/expense-tracker-web-api/utils"
+	u "expense-tracker-web-api/utils"
 )
 
 // Account ...

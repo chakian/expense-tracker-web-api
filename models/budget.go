@@ -1,9 +1,8 @@
 package models
 
 import (
+	u "expense-tracker-web-api/utils"
 	"fmt"
-
-	u "github.com/chakian/expense-tracker-web-api/utils"
 )
 
 // Budget ...
