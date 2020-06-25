@@ -27,7 +27,6 @@ func GetCategoryListByBudgetID(budgetid uint, userid uint) []*Category {
 
 	categories := make([]*Category, 0)
 
-	//SELECT * FROM budget INNER JOIN budget_user ON budget.budget_id = budget_user.budget_id WHERE budget_user.user_id = 1
 	err := GetDB().Table("budget_category").Where("active_flag = ? AND budget_id = ? ", 1, budgetid).Find(&categories).Error
 	if err != nil {
 		fmt.Println(err)

@@ -2,6 +2,7 @@ package models
 
 import (
 	u "expense-tracker-web-api/utils"
+	"fmt"
 )
 
 // Account ...
@@ -16,6 +17,23 @@ type Account struct {
 // TableName ...
 func (Account) TableName() string {
 	return "budget_account"
+}
+
+// GetAccountListByBudgetID ...
+func GetAccountListByBudgetID(budgetid uint, userid uint) []*Account {
+	if DoesBudgetBelongToUser(budgetid, userid) == false {
+		return nil
+	}
+
+	accounts := make([]*Account, 0)
+
+	err := GetDB().Table("budget_account").Where("active_flag = ? AND budget_id = ? ", 1, budgetid).Find(&accounts).Error
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	return accounts
 }
 
 // Create ...
