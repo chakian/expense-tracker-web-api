@@ -8,6 +8,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// TODO: Re-Write here with the interface: https://blog.learngoprogramming.com/how-to-mock-in-your-go-golang-tests-b9eee7d7c266
+
 // ConfigModel ...
 type ConfigModel struct {
 	Server struct {
