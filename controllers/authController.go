@@ -2,9 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
-	"expense-tracker-web-api/models"
-	u "expense-tracker-web-api/utils"
 	"net/http"
+
+	"github.com/chakian/expense-tracker-web-api/models"
+	u "github.com/chakian/expense-tracker-web-api/utils"
 )
 
 // CreateUser ...

@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"expense-tracker-web-api/utils"
-	u "expense-tracker-web-api/utils"
+	u "github.com/chakian/expense-tracker-web-api/utils"
 
 	_ "github.com/go-sql-driver/mysql" //we do the db operations in this package. This comment is mandatory for lint
 	"github.com/jinzhu/gorm"
@@ -49,7 +48,7 @@ func init() {
 	u.CheckAndLog(err)
 
 	db = conn
-	if utils.Config.Server.Environment == "LOCAL" {
+	if u.Config.Server.Environment == "LOCAL" {
 		db.LogMode(true)
 		db.Debug() //.AutoMigrate(&Account{}, &Contact{}) //Database migration
 	} else {

@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	u "expense-tracker-web-api/utils"
+	u "github.com/chakian/expense-tracker-web-api/utils"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"

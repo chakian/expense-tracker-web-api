@@ -13,8 +13,8 @@ import (
 	"os"
 	"time"
 
-	"expense-tracker-web-api/app"
-	"expense-tracker-web-api/controllers"
+	"github.com/chakian/expense-tracker-web-api/app"
+	"github.com/chakian/expense-tracker-web-api/controllers"
 )
 
 var startupTime time.Time
