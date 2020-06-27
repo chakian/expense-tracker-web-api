@@ -11,3 +11,7 @@
 
 # gcp configs
 app_test.yaml
+
+#test related
+*.out
+coverage.html
