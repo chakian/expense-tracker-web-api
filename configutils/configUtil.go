@@ -1,4 +1,4 @@
-package utils
+package configutils
 
 import (
 	"fmt"
@@ -6,9 +6,9 @@ import (
 
 	"github.com/kelseyhightower/envconfig"
 	"gopkg.in/yaml.v2"
-)
 
-// TODO: Re-Write here with the interface: https://blog.learngoprogramming.com/how-to-mock-in-your-go-golang-tests-b9eee7d7c266
+	u "expense-tracker-web-api/utils"
+)
 
 // ConfigModel ...
 type ConfigModel struct {
@@ -29,29 +29,38 @@ type ConfigModel struct {
 // Config ...
 var Config ConfigModel
 
-func init() {
-	fmt.Println("Started configUtil.init()")
+// abstractions
+// type readEnv func()
+// type readYml func()
 
-	readYml()
-	readEnv()
-
-	fmt.Println("Finished configUtil.init()")
-}
+// // ConfigUtilMethods ...
+// type ConfigUtilMethods struct {
+// 	readEnvHolder readEnv
+// 	readYmlHolder readYml
+// }
 
 func readYml() {
 	fmt.Println("Reading appconfig.yml")
 
 	f, err := os.Open("appconfig.yml")
-	CheckAndPanic(err)
+	u.CheckAndPanic(err)
 	defer f.Close()
 
 	decoder := yaml.NewDecoder(f)
 	err = decoder.Decode(&Config)
-	CheckAndPanic(err)
+	u.CheckAndPanic(err)
 }
 
 func readEnv() {
 	fmt.Println("Reading environment variables")
 	err := envconfig.Process("", &Config)
-	CheckAndLogFatal(err)
+	u.CheckAndLogFatal(err)
+}
+
+// Initialize ...
+func Initialize() {
+	fmt.Println("Started configUtil.Initialize()")
+	readEnv()
+	readYml()
+	fmt.Println("Finished configUtil.Initialize()")
 }
