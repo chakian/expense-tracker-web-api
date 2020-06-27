@@ -14,6 +14,7 @@ var emailTests = []struct {
 	// {"aa@aa", false},
 	{"aa@aa.", false},
 	{"@aa.", false},
+	{"@aa..", false},
 }
 
 func TestEmail(t *testing.T) {
