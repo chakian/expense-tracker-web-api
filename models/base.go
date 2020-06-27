@@ -2,15 +2,16 @@ package models
 
 import (
 	"fmt"
+	"os"
+	"strings"
 	"time"
 
+	c "expense-tracker-web-api/configutils"
 	u "expense-tracker-web-api/utils"
 
 	_ "github.com/go-sql-driver/mysql" //we do the db operations in this package. This comment is mandatory for lint
 	"github.com/jinzhu/gorm"
 )
-
-// "github.com/joho/godotenv"
 
 // BaseAuditableModel ...
 type BaseAuditableModel struct {
@@ -40,15 +41,36 @@ func SetAuditValuesForUpdate(model *BaseAuditableModel, isActive uint8, userid u
 
 var db *gorm.DB
 
+func isInTests() bool {
+	for _, arg := range os.Args {
+		if strings.HasPrefix(arg, "-test.") {
+			return true
+		}
+	}
+	return false
+}
+
 func init() {
 	fmt.Println("initializing db")
+
+	if isInTests() {
+		fmt.Print("TEST ENVIRONMENT. Skipping Db Initialization")
+		return
+	}
+
+	// if os.Getenv("GO_ENV") == "TEST" {
+	// 	fmt.Print("TEST ENVIRONMENT. Skipping Db Initialization")
+	// 	return
+	// }
+
+	c.Initialize()
 
 	dbURI := getDBURI()
 	conn, err := gorm.Open("mysql", dbURI)
 	u.CheckAndLog(err)
 
 	db = conn
-	if u.Config.Server.Environment == "LOCAL" {
+	if c.Config.Server.Environment == "LOCAL" {
 		db.LogMode(true)
 		db.Debug() //.AutoMigrate(&Account{}, &Contact{}) //Database migration
 	} else {
@@ -60,17 +82,17 @@ func init() {
 
 func getDBURI() string {
 	var (
-		username               = u.Config.Database.DbUser
-		password               = u.Config.Database.DbPass
-		dbName                 = u.Config.Database.DbName
-		dbHost                 = u.Config.Database.DbHost
-		dbPort                 = u.Config.Database.DbPort
-		instanceConnectionName = u.Config.Database.InstanceName
+		username               = c.Config.Database.DbUser
+		password               = c.Config.Database.DbPass
+		dbName                 = c.Config.Database.DbName
+		dbHost                 = c.Config.Database.DbHost
+		dbPort                 = c.Config.Database.DbPort
+		instanceConnectionName = c.Config.Database.InstanceName
 	)
 
 	var dbURI string
 
-	if u.Config.Server.Environment == "LOCAL" {
+	if c.Config.Server.Environment == "LOCAL" {
 		dbURI = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", username, password, dbHost, dbPort, dbName)
 	} else {
 		dbURI = fmt.Sprintf("%s:%s@unix(/cloudsql/%s)/%s?parseTime=true", username, password, instanceConnectionName, dbName)

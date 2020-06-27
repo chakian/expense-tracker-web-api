@@ -14,13 +14,13 @@ import (
 
 // GetAccountsOfBudget ...
 var GetAccountsOfBudget = func(w http.ResponseWriter, r *http.Request) {
-	log.Print("Started: accountController.GetAccountsOfBudget")
-	log.Print("Finished: accountController.GetAccountsOfBudget")
+	log.Println("Started: accountController.GetAccountsOfBudget")
+	log.Println("Finished: accountController.GetAccountsOfBudget")
 }
 
 // CreateAccount ...
 var CreateAccount = func(w http.ResponseWriter, r *http.Request) {
-	log.Print("Started: accountController.CreateAccount")
+	log.Println("Started: accountController.CreateAccount")
 
 	userid := app.GetUserID(r)
 	account := &models.Account{}
@@ -34,12 +34,12 @@ var CreateAccount = func(w http.ResponseWriter, r *http.Request) {
 	resp := account.Create(userid)
 	u.Respond(w, resp)
 
-	log.Print("Finished: accountController.CreateAccount")
+	log.Println("Finished: accountController.CreateAccount")
 }
 
 // UpdateAccount ...
 var UpdateAccount = func(w http.ResponseWriter, r *http.Request) {
-	log.Print("Started: accountController.UpdateAccount")
+	log.Println("Started: accountController.UpdateAccount")
 
 	params := mux.Vars(r)
 	account := &models.Account{}
@@ -59,5 +59,5 @@ var UpdateAccount = func(w http.ResponseWriter, r *http.Request) {
 	resp := account.Update(userid)
 	u.Respond(w, resp)
 
-	log.Print("Finished: accountController.UpdateAccount")
+	log.Println("Finished: accountController.UpdateAccount")
 }
