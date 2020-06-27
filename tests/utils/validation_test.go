@@ -1,4 +1,4 @@
-package utils_test
+package utils
 
 import (
 	"expense-tracker-web-api/utils"

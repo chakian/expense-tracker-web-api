@@ -1,4 +1,4 @@
-package controller_test
+package controllers
 
 import (
 	"expense-tracker-web-api/controllers"
