@@ -73,3 +73,16 @@ func (transactionHeader *TransactionHeader) Update(userid uint) map[string]inter
 
 	return resp
 }
+
+// Delete ...
+func (transactionHeader *TransactionHeader) Delete(userid uint) map[string]interface{} {
+	if DoesBudgetBelongToUser(transactionHeader.BudgetID, userid) == false {
+		return nil
+	}
+
+	GetDB().Model(&transactionHeader).Delete(transactionHeader)
+
+	resp := u.Message(true, "success")
+
+	return resp
+}

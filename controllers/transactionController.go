@@ -83,5 +83,18 @@ var UpdateTransaction = func(w http.ResponseWriter, r *http.Request) {
 // DeleteTransaction ...
 var DeleteTransaction = func(w http.ResponseWriter, r *http.Request) {
 	log.Print("Started: transactionController.DeleteTransaction")
+
+	userid := app.GetUserID(r)
+	transaction := &models.TransactionHeader{}
+
+	err := json.NewDecoder(r.Body).Decode(transaction)
+	if err != nil {
+		u.Respond(w, u.Message(false, "Error while decoding request body"))
+		return
+	}
+
+	resp := transaction.Delete(userid)
+	u.Respond(w, resp)
+
 	log.Print("Finished: transactionController.DeleteTransaction")
 }
