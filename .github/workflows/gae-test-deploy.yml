@@ -1,0 +1,31 @@
+name: Deploy to Google App Engine test service
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set-up GO
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.14
+      id: go
+
+    - name: Build
+      run: go build
+    
+    - uses: actions/gcloud/auth@master
+      env:
+        GCLOUD_AUTH: ${{ secrets.GCP_TEST_SERV_ACC_KEY }}
+    
+    - uses: actions/gcloud/cli@master
+      with:
+        args: "app deploy --quiet --project=expense-track-api -s test"
