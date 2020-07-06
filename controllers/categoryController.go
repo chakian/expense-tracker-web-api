@@ -17,7 +17,6 @@ var GetCategoriesOfBudget = func(w http.ResponseWriter, r *http.Request) {
 	log.Print("Started: categoryController.GetCategoriesOfBudget")
 
 	userid := app.GetUserID(r)
-	log.Print("userid : ", userid)
 
 	params := mux.Vars(r)
 	budgetid, err := strconv.ParseUint(params["budget_id"], 0, 32)
