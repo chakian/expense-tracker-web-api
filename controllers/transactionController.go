@@ -45,6 +45,19 @@ var GetTransactionList = func(w http.ResponseWriter, r *http.Request) {
 // CreateTransaction ...
 var CreateTransaction = func(w http.ResponseWriter, r *http.Request) {
 	log.Print("Started: transactionController.CreateTransaction")
+
+	userid := app.GetUserID(r)
+	transaction := &models.TransactionHeader{}
+
+	err := json.NewDecoder(r.Body).Decode(transaction)
+	if err != nil {
+		u.Respond(w, u.Message(false, "Error while decoding request body"))
+		return
+	}
+
+	resp := transaction.Create(userid)
+	u.Respond(w, resp)
+
 	log.Print("Finished: transactionController.CreateTransaction")
 }
 

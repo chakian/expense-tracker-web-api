@@ -1,6 +1,7 @@
 package models
 
 import (
+	u "expense-tracker-web-api/utils"
 	"fmt"
 	"time"
 )
@@ -40,4 +41,19 @@ func GetFilteredTransactionList(budgetid uint, startDate time.Time, endDate time
 	}
 
 	return transactions
+}
+
+// Create ...
+func (transactionHeader *TransactionHeader) Create(userid uint) map[string]interface{} {
+	if DoesBudgetBelongToUser(transactionHeader.BudgetID, userid) == false {
+		return nil
+	}
+
+	SetAuditValuesForInsert(&transactionHeader.BaseAuditableModel, 1, userid)
+
+	GetDB().Create(transactionHeader)
+
+	resp := u.Message(true, "success")
+	resp["transactionHeader"] = transactionHeader
+	return resp
 }
