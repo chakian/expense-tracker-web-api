@@ -22,7 +22,7 @@ type ConfigModel struct {
 		DbName       string `yaml:"name" envconfig:"EXP_DB_NAME"`
 		DbUser       string `yaml:"user" envconfig:"EXP_DB_USERNAME"`
 		DbPass       string `yaml:"pass" envconfig:"EXP_DB_PASSWORD"`
-		InstanceName string `yaml:"instance_name" envconfig:"EXP_DB_INSTANCE_NAME"`
+		InstanceName string `yaml:"instancename" envconfig:"EXP_DB_INSTANCE_NAME"`
 	} `yaml:"database"`
 }
 
