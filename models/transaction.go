@@ -57,3 +57,19 @@ func (transactionHeader *TransactionHeader) Create(userid uint) map[string]inter
 	resp["transactionHeader"] = transactionHeader
 	return resp
 }
+
+// Update ...
+func (transactionHeader *TransactionHeader) Update(userid uint) map[string]interface{} {
+	if DoesBudgetBelongToUser(transactionHeader.BudgetID, userid) == false {
+		return nil
+	}
+
+	SetAuditValuesForUpdate(&transactionHeader.BaseAuditableModel, 1, userid)
+
+	GetDB().Model(&transactionHeader).Update(transactionHeader)
+
+	resp := u.Message(true, "success")
+	resp["transactionHeader"] = transactionHeader
+
+	return resp
+}
