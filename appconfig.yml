@@ -1,3 +1,4 @@
+# LOCALTO
 # Server configurations
 server:
   environment: "LOCAL"

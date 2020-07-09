@@ -9,6 +9,10 @@
 # More
 [Tt]estReports/
 
-#test related
+# Test related
 *.out
 coverage.html
+
+# Config files
+appconfig_staging.yml
+appconfig_live.yml
