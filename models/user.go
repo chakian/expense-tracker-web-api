@@ -14,12 +14,13 @@ import (
 
 //User ... A struct to represent user account
 type User struct {
-	ID           uint      `json:"userId" gorm:"primary_key;column:user_id"`
-	Email        string    `json:"email"`
-	Password     string    `json:"password"`
-	Name         string    `json:"name" gorm:"column:user_name"`
-	RegisterDate time.Time `json:"-" gorm:"column:register_date"`
-	Token        string    `json:"token" gorm:"-"`
+	ID              uint      `json:"userId" gorm:"primary_key;column:user_id"`
+	Email           string    `json:"email"`
+	Password        string    `json:"password"`
+	Name            string    `json:"name" gorm:"column:user_name"`
+	RegisterDate    time.Time `json:"-" gorm:"column:register_date"`
+	Token           string    `json:"token" gorm:"-"`
+	DefaultBudgetID uint      `json:"defaultBudgetID" gorm:"column:default_budget_id"`
 }
 
 // TableName ...
