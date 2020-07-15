@@ -20,7 +20,7 @@ type User struct {
 	Name            string    `json:"name" gorm:"column:user_name"`
 	RegisterDate    time.Time `json:"-" gorm:"column:register_date"`
 	Token           string    `json:"token" gorm:"-"`
-	DefaultBudgetID uint      `json:"defaultBudgetID" gorm:"column:default_budget_id"`
+	DefaultBudgetID uint      `json:"defaultBudgetId" gorm:"column:default_budget_id"`
 }
 
 // TableName ...
