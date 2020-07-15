@@ -1,0 +1,13 @@
+steps:
+# Build the module
+- name: golang
+  args: ['go', 'build', '.']
+
+artifacts:
+  objects:
+    location: ''
+    paths: ['']
+
+# Deploy
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['app', 'deploy', $_DEPLOY_APP_YAML_NAME]
